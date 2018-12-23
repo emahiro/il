@@ -1,0 +1,2 @@
+runtime: go111
+service: gae-go111-app
