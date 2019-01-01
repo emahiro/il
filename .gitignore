@@ -1,3 +1,8 @@
 *node_modules/
-*.idea
-*.iml
+
+# myNuxtTodo ignoresgit pu
+myNuxtTodos/.eslintrc.js
+myNuxtTodos/*.iml
+myNuxtTodos/.idea
+myNuxtTodos/.nuxt
+myNuxtTodos/node_modules
