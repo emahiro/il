@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/user/emahiro/handler"
+	"gae_go111_app/handler"
 )
 
 func main() {

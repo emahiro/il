@@ -2,6 +2,6 @@ package handler
 
 import "log"
 
-func init(){
+func init() {
 	log.Printf("init")
 }

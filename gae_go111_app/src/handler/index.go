@@ -5,10 +5,10 @@ import (
 )
 
 // Index ...
-func Index(w http.ResponseWriter,r *http.Request){
+func Index(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/" {
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 		return
 	}
 
