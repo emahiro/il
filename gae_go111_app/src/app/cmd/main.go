@@ -13,10 +13,13 @@ import (
 func main() {
 	f, err := os.Open("app.yaml")
 	log.Printf("%v", err)
-	io.Copy(os.Stdout, f)
+	if _, err := io.Copy(os.Stdout, f); err != nil {
+		panic(err)
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handler.Index)
+	mux.HandleFunc("/render", handler.RenderHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -28,3 +31,5 @@ func main() {
 		panic(err)
 	}
 }
+
+
