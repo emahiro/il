@@ -1,6 +1,6 @@
 runtime: go111
 service: gae-go111-app
-main: ./app/cmd
+main: gae_go111_app/app/cmd
 handlers:
   - url: /static
     static_dir: static
