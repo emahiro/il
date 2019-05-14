@@ -6,7 +6,3 @@ myNuxtTodos/*.iml
 myNuxtTodos/.idea
 myNuxtTodos/.nuxt
 myNuxtTodos/node_modules
-
-
-# gae
-gae_go111_app_2

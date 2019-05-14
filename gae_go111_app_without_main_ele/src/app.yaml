@@ -1,0 +1,6 @@
+runtime: go111
+service: gae-go111-app
+handlers:
+  - url: /static
+    static_dir: static
+    secure: always
