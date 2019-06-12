@@ -21,7 +21,8 @@ const (
 func main() {
 	mux := &gemux.ServeMux{}
 	mux.Handle("/", http.MethodGet, http.HandlerFunc(handler.Index))
-	mux.Handle("/userA", http.MethodGet, http.HandleFunc(handler.GetUserA))
+	mux.Handle("/userA", http.MethodGet, http.HandlerFunc(handler.GetUserA))
+	mux.Handle("/userB", http.MethodGet, http.HandlerFunc(handler.GetUserB))
 
 	server := &http.Server{
 		Addr:    port,
