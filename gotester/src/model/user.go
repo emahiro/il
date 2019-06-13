@@ -26,6 +26,6 @@ type UserB struct {
 
 // Get ...
 func (u *UserB) Get() (*UserB, error) {
-	log.Printf("implementation detail of UserB")
+	log.Printf("implementation detail of UserB. This UserName is %s", u.Name)
 	return u, nil
 }
