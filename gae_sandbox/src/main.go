@@ -121,6 +121,7 @@ func main() {
 		}
 
 		log.Printf("success velity token")
+		log.Printf("%+v", token)
 		w.WriteHeader(http.StatusOK)
 	}))
 
