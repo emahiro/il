@@ -24,9 +24,6 @@ func main() {
 		w.Write([]byte("hello"))
 	}))
 	mux.Handle("/metadata", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-	}))
-	mux.Handle("/metadata/debug", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		client := http.Client{Transport: http.DefaultTransport}
 
 		values := url.Values{}
