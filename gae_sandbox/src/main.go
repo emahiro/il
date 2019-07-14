@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
@@ -25,7 +27,45 @@ func main() {
 
 	}))
 	mux.Handle("/metadata/debug", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		client := http.Client{Transport: http.DefaultTransport}
 
+		values := url.Values{}
+		values.Set("audience", "test")
+		values.Set("format", "full")
+
+		reqURL := fmt.Sprintf("http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?%s", values.Encode())
+		req, err := http.NewRequest(http.MethodGet, reqURL, nil)
+		if err != nil {
+			log.Printf("failed to create request")
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		req.Header.Set("Metadata-Flavor", "Google")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Printf("failed to get metadata. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+		defer resp.Body.Close()
+
+		w.WriteHeader(resp.StatusCode)
+
+		if resp.StatusCode != http.StatusOK {
+			log.Printf("failed to get metadata. body: %+v", resp.Body)
+			return
+		}
+
+		b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("failed to read body. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(b)
 	}))
 
 	server := http.Server{
