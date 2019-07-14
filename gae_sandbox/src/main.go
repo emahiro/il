@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,6 +14,8 @@ import (
 	"time"
 
 	"github.com/fharding1/gemux"
+
+	"emahiro/il/gae_sandbox/model"
 )
 
 var addr = 8080
@@ -63,6 +66,40 @@ func main() {
 		}
 
 		w.Write(b)
+	}))
+	mux.Handle("/verify", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		client := http.Client{Transport: http.DefaultTransport}
+		req, err := http.NewRequest(http.MethodGet, "https://www.googleapis.com/oauth2/v3/certs", nil)
+		if err != nil {
+			log.Printf("failed to create request. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Printf("failed to get public keys. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+		defer resp.Body.Close()
+
+		w.WriteHeader(resp.StatusCode)
+
+		if resp.StatusCode != http.StatusOK {
+			log.Printf("failed to get public kyes. code: %d", resp.StatusCode)
+			return
+		}
+
+		keys := model.PublicKeys{}
+		if err := json.NewDecoder(resp.Body).Decode(&keys); err != nil {
+			log.Printf("failed to decode json. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		// verify
+
 	}))
 
 	server := http.Server{
