@@ -1,2 +1,2 @@
 runtime: go112
-service: ema_test
+service: ema-test
