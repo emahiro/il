@@ -21,6 +21,12 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("hello"))
 	}))
+	mux.Handle("/metadata", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+	}))
+	mux.Handle("/metadata/debug", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+	}))
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", addr),
