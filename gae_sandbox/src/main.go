@@ -2,15 +2,10 @@ package main
 
 import (
 	"context"
-	"crypto/rsa"
-	"encoding/base64"
-	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/big"
 	"net/http"
 	"net/url"
 	"os"
@@ -21,8 +16,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/fharding1/gemux"
-
-	"emahiro/il/gae_sandbox/model"
+	"github.com/lestrrat/go-jwx/jwk"
 )
 
 var addr = 8080
@@ -75,36 +69,6 @@ func main() {
 		w.Write(b)
 	}))
 	mux.Handle("/verify", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		client := http.Client{Transport: http.DefaultTransport}
-		req, err := http.NewRequest(http.MethodGet, "https://www.googleapis.com/oauth2/v3/certs", nil)
-		if err != nil {
-			log.Printf("failed to create request. err: %v", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Printf("failed to get public keys. err: %v", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-		defer resp.Body.Close()
-
-		w.WriteHeader(resp.StatusCode)
-
-		if resp.StatusCode != http.StatusOK {
-			log.Printf("failed to get public kyes. code: %d", resp.StatusCode)
-			return
-		}
-
-		keys := model.PublicKeys{}
-		if err := json.NewDecoder(resp.Body).Decode(&keys); err != nil {
-			log.Printf("failed to decode json. err: %v", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-
 		// verify
 		hdr := r.Header.Get("Authorization")
 		if hdr == "" {
@@ -121,47 +85,43 @@ func main() {
 			return
 		}
 
-		parsedToken, err := jwt.Parse(p[1], func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(p[1], func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 				err := errors.New("unexpected signing method")
 				return nil, err
 			}
 
-			k := keys.Keys[1]
-
-			dn, err := base64.RawURLEncoding.DecodeString(k.N)
+			set, err := jwk.Fetch("https://www.googleapis.com/oauth2/v3/certs")
 			if err != nil {
+				log.Printf("cannot get fetch key set. err: %v", err)
 				return nil, err
 			}
-			n := new(big.Int).SetBytes(dn)
-			log.Printf("n: %d", n)
 
-			de, err := base64.RawURLEncoding.DecodeString(k.E)
-			if err != nil {
-				return nil, err
+			keyID, ok := token.Header["kid"].(string)
+			if !ok {
+				return nil, fmt.Errorf("expecting JWT header to have string kid")
 			}
-			e := binary.BigEndian.Uint16(de)
-			log.Printf("e: %v", e)
 
-			return &rsa.PublicKey{
-				N: n,
-				E: int(e),
-			}, nil
+			key := set.LookupKeyID(keyID)
+			if len(key) != 1 {
+				return nil, fmt.Errorf("unable to find key")
+			}
+
+			return key[0].Materialize()
 		})
 		if err != nil {
 			log.Printf("failed to parse token. err: %v", err)
 			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			return
 		}
-		if !parsedToken.Valid {
-			log.Printf("failed to validation token. token: %+v", parsedToken)
+		if !token.Valid {
+			log.Printf("failed to validation token. token: %+v", token)
 			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			return
 		}
 
 		log.Printf("success velity token")
 		w.WriteHeader(http.StatusOK)
-
 	}))
 
 	server := http.Server{
