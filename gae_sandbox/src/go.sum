@@ -1,2 +1,4 @@
+github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
+github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/fharding1/gemux v0.2.2 h1:e9biTLXa8XerPVgr719xAJmdpjMJghLGAgb8Gfrys7A=
 github.com/fharding1/gemux v0.2.2/go.mod h1:hVvT4c4tLN8DeXgtFknalmTt9WGLICQaJcKL9iN7LMY=

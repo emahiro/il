@@ -2,17 +2,24 @@ package main
 
 import (
 	"context"
+	"crypto/rsa"
+	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/big"
 	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/fharding1/gemux"
 
 	"emahiro/il/gae_sandbox/model"
@@ -99,6 +106,61 @@ func main() {
 		}
 
 		// verify
+		hdr := r.Header.Get("Authorization")
+		if hdr == "" {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		p := strings.Split(hdr, " ")
+		if len(p) != 2 {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		if p[0] != "Bearer" {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+
+		parsedToken, err := jwt.Parse(p[1], func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+				err := errors.New("unexpected signing method")
+				return nil, err
+			}
+
+			k := keys.Keys[1]
+
+			dn, err := base64.RawURLEncoding.DecodeString(k.N)
+			if err != nil {
+				return nil, err
+			}
+			n := new(big.Int).SetBytes(dn)
+			log.Printf("n: %d", n)
+
+			de, err := base64.RawURLEncoding.DecodeString(k.E)
+			if err != nil {
+				return nil, err
+			}
+			e := binary.BigEndian.Uint16(de)
+			log.Printf("e: %v", e)
+
+			return &rsa.PublicKey{
+				N: n,
+				E: int(e),
+			}, nil
+		})
+		if err != nil {
+			log.Printf("failed to parse token. err: %v", err)
+			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+			return
+		}
+		if !parsedToken.Valid {
+			log.Printf("failed to validation token. token: %+v", parsedToken)
+			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+			return
+		}
+
+		log.Printf("success velity token")
+		w.WriteHeader(http.StatusOK)
 
 	}))
 
