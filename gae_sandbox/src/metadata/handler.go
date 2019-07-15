@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/lestrrat/go-jwx/jwk"
@@ -78,11 +79,15 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 			return nil, err
 		}
 
+		start := time.Now()
 		set, err := jwk.Fetch("https://www.googleapis.com/oauth2/v3/certs")
 		if err != nil {
 			log.Printf("cannot get fetch key set. err: %v", err)
 			return nil, err
 		}
+		end := time.Now()
+		d := end.Sub(start)
+		log.Printf("duration: %v", d)
 
 		keyID, ok := token.Header["kid"].(string)
 		if !ok {
