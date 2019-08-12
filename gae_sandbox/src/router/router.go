@@ -5,6 +5,7 @@ import (
 
 	"github.com/emahiro/ae-plain-logger/middleware"
 	"github.com/fharding1/gemux"
+	"github.com/gin-gonic/gin"
 	"github.com/go-chi/chi"
 
 	"emahiro/il/gae_sandbox/metadata"
@@ -48,4 +49,15 @@ func (r *WebRouter) ChiMux() http.Handler {
 	mux.Handle("/verify", http.HandlerFunc(metadata.Verify))
 
 	return middleware.MwAEPlainLogger("chiServeMux")(mux)
+}
+
+func (r *WebRouter) GinRouter() http.Handler {
+	mux := gin.New()
+	mux.GET("/hello", func(gc *gin.Context) {
+		gc.Status(http.StatusOK)
+		gc.Writer.Write([]byte("hello"))
+		return
+	})
+
+	return middleware.MwAEPlainLogger("ginRouter")(mux)
 }
