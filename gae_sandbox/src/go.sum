@@ -10,6 +10,8 @@ github.com/emahiro/ae-plain-logger v0.0.0-20190809175322-e897d4e5f8c7 h1:3euAe0D
 github.com/emahiro/ae-plain-logger v0.0.0-20190809175322-e897d4e5f8c7/go.mod h1:og5I+64Xb5g7OC2Fwx59ajRlIXGu2Ue9Ng+4XNL9tG0=
 github.com/fharding1/gemux v0.2.2 h1:e9biTLXa8XerPVgr719xAJmdpjMJghLGAgb8Gfrys7A=
 github.com/fharding1/gemux v0.2.2/go.mod h1:hVvT4c4tLN8DeXgtFknalmTt9WGLICQaJcKL9iN7LMY=
+github.com/go-chi/chi v4.0.2+incompatible h1:maB6vn6FqCxrpz4FqWdh4+lwpyZIQS7YEAUcHlgXVRs=
+github.com/go-chi/chi v4.0.2+incompatible/go.mod h1:eB3wogJHnLi3x/kFX2A+IbTBlXxmMeXJVKy9tTv1XzQ=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
