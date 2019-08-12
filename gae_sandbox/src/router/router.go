@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"github.com/emahiro/ae-plain-logger/middleware"
 	"github.com/fharding1/gemux"
 
 	"emahiro/il/gae_sandbox/metadata"
@@ -27,7 +28,7 @@ func (r *WebRouter) NewServeMux() http.Handler {
 	mux.Handle("/metadata", http.HandlerFunc(metadata.GetMetadata))
 	mux.Handle("/verify", http.HandlerFunc(metadata.Verify))
 
-	return mux
+	return middleware.MwAEPlainLogger("NewServeMux")(mux)
 }
 
 func (r *WebRouter) Gemux() http.Handler {
@@ -39,5 +40,5 @@ func (r *WebRouter) Gemux() http.Handler {
 	mux.Handle("/metadata", http.MethodGet, http.HandlerFunc(metadata.GetMetadata))
 	mux.Handle("/verify", http.MethodGet, http.HandlerFunc(metadata.Verify))
 
-	return mux
+	return middleware.MwAEPlainLogger("GemuxServeMux")(mux)
 }
