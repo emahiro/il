@@ -10,21 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fharding1/gemux"
-
-	"emahiro/il/gae_sandbox/metadata"
+	"emahiro/il/gae_sandbox/router"
 )
 
 var addr = 8080
 
 func main() {
-	mux := &gemux.ServeMux{}
-	mux.Handle("/hello", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("hello"))
-	}))
-	mux.Handle("/metadata", http.MethodGet, http.HandlerFunc(metadata.GetMetadata))
-	mux.Handle("/verify", http.MethodGet, http.HandlerFunc(metadata.Verify))
+	r := router.NewRouter()
+	mux := r.Gemux()
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", addr),
