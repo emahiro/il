@@ -12,22 +12,32 @@ import (
 )
 
 type Router interface {
-	Build() http.Handler
+	Build(mux http.Handler) http.Handler
 }
 
 type WebRouter struct{}
 
-func NewRouter() *WebRouter {
+func (r *WebRouter) ServeHTTP(w http.ResponseWriter, req *http.Request) {}
+
+func NewRouter() Router {
 	return &WebRouter{}
 }
 
-func (r *WebRouter) NewServeMux() http.Handler {
-	mux := http.NewServeMux()
-
-	return middleware.MwAEPlainLogger("NewServeMux")(mux)
+func (r *WebRouter) Build(mux http.Handler) http.Handler {
+	return middleware.MwAEPlainLogger("MwAEPlainLogger")(r)
 }
 
-func (r *WebRouter) Gemux() http.Handler {
+func PureServeMux() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/hello", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("hello"))
+	}))
+
+	return mux
+}
+
+func Gemux() http.Handler {
 	mux := &gemux.ServeMux{}
 	mux.Handle("/hello", http.MethodGet, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -36,10 +46,10 @@ func (r *WebRouter) Gemux() http.Handler {
 	mux.Handle("/metadata", http.MethodGet, http.HandlerFunc(metadata.GetMetadata))
 	mux.Handle("/verify", http.MethodGet, http.HandlerFunc(metadata.Verify))
 
-	return middleware.MwAEPlainLogger("GemuxServeMux")(mux)
+	return mux
 }
 
-func (r *WebRouter) ChiMux() http.Handler {
+func ChiMux() http.Handler {
 	mux := chi.NewMux()
 	mux.HandleFunc("/hello", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -48,10 +58,10 @@ func (r *WebRouter) ChiMux() http.Handler {
 	mux.Handle("/metadata", http.HandlerFunc(metadata.GetMetadata))
 	mux.Handle("/verify", http.HandlerFunc(metadata.Verify))
 
-	return middleware.MwAEPlainLogger("chiServeMux")(mux)
+	return mux
 }
 
-func (r *WebRouter) GinRouter() http.Handler {
+func GinRouter() http.Handler {
 	mux := gin.New()
 	mux.GET("/hello", func(gc *gin.Context) {
 		gc.Status(http.StatusOK)
@@ -59,5 +69,5 @@ func (r *WebRouter) GinRouter() http.Handler {
 		return
 	})
 
-	return middleware.MwAEPlainLogger("ginRouter")(mux)
+	return mux
 }

@@ -17,11 +17,11 @@ var addr = 8080
 
 func main() {
 	r := router.NewRouter()
-	mux := r.Gemux()
+	handler := r.Build(router.PureServeMux())
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", addr),
-		Handler: mux,
+		Handler: handler,
 	}
 
 	log.Printf("server start port: %d ...", addr)
