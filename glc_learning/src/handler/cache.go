@@ -41,5 +41,5 @@ func GetCache(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("get cache data. data is %v", data)))
+	w.Write([]byte(fmt.Sprintf("get cache data. data is %s", string(data))))
 }
