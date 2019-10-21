@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -17,11 +18,29 @@ func init() {
 	}
 }
 
+type requestBody struct {
+	Data string `json:"data"`
+}
+
 // SetCache ...
 func SetCache(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	if err := fc.Set("test", []byte("this is cache")); err != nil {
+	var body *requestBody
+	if err := json.NewDecoder(r.Body).Decode(body); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Warningf(ctx, "invalid request")
+		return
+	}
+
+	b, err := json.Marshal(body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Errorf(ctx, "failed to parse json. err: %v", err)
+		return
+	}
+
+	if err := fc.Set("test", b); err != nil {
 		log.Errorf(ctx, "failed to set error. err: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("failed to set cache"))
