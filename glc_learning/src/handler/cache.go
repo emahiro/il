@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/emahiro/ae-plain-logger/log"
-
 	"github.com/emahiro/glc"
 )
 
@@ -14,7 +12,7 @@ var fc *glc.FileCache
 func init() {
 	var err error
 	if fc, err = glc.NewFileCache("glc_learning"); err != nil {
-		log.Fatalf("cannot crete file cache directory. err: %v", err)
+		panic(err)
 	}
 }
 
