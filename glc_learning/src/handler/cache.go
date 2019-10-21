@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/emahiro/ae-plain-logger/log"
@@ -26,14 +27,27 @@ type requestBody struct {
 func SetCache(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var body *requestBody
-	if err := json.NewDecoder(r.Body).Decode(body); err != nil {
+	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Warningf(ctx, "invalid request")
+		log.Warningf(ctx, "unexpected method")
 		return
 	}
 
-	b, err := json.Marshal(body)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Warningf(ctx, "failed to read body")
+		return
+	}
+
+	requestBody := &requestBody{}
+	if err := json.Unmarshal(body, requestBody); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Warningf(ctx, "invalid request. err: %v", err)
+		return
+	}
+
+	b, err := json.Marshal(requestBody.Data)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Errorf(ctx, "failed to parse json. err: %v", err)
