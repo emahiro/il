@@ -16,12 +16,12 @@ func main() {
 	r := &router.WebRouter{}
 	h := r.Build(router.DefaultRouter())
 
-	log.Printf("start server in 8080 port ...")
-
 	port := os.Getenv("PORT")
-	if port != "" {
+	if port == "" {
 		port = "8080"
 	}
+
+	log.Printf("start server in :%s port ...", port)
 
 	server := http.Server{
 		Addr:    ":" + port,
