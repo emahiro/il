@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/emahiro/il/glc_learning/router"
 	"context"
 	"fmt"
 	"log"
@@ -9,8 +10,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/emahiro/il/glc_learning/src/router"
 )
 
 func main() {

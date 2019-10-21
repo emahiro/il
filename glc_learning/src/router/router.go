@@ -3,7 +3,8 @@ package router
 import (
 	"net/http"
 
-	"github.com/emahiro/il/glc_learning/src/handler"
+	"github.com/emahiro/ae-plain-logger/middleware"
+	"github.com/emahiro/il/glc_learning/handler"
 )
 
 // Router is ...
@@ -30,6 +31,5 @@ func DefaultRouter() http.Handler {
 	})
 	mux.HandleFunc("/get", handler.GetCache)
 	mux.HandleFunc("/set", handler.SetCache)
-
-	return mux
+	return middleware.AEPlainLogger("DefaultRouter")(mux)
 }
