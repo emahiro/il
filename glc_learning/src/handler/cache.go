@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/emahiro/ae-plain-logger/log"
@@ -31,6 +32,14 @@ func SetCache(w http.ResponseWriter, r *http.Request) {
 
 // GetCache ...
 func GetCache(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	data := fc.Get("test")
+	if data == nil {
+		w.WriteHeader(http.StatusFound)
+		log.Warningf(ctx, "faild to get cache data")
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("get cache!"))
+	w.Write([]byte(fmt.Sprintf("get cache data. data is %v", data)))
 }
