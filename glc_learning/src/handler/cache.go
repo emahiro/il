@@ -22,8 +22,10 @@ func SetCache(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	if err := fc.Set("test", []byte("this is cache")); err != nil {
+		log.Errorf(ctx, "failed to set error. err: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Infof(ctx, "failed to set error. err: %v", err)
+		w.Write([]byte("failed to set cache"))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -36,8 +38,10 @@ func GetCache(w http.ResponseWriter, r *http.Request) {
 
 	data := fc.Get("test")
 	if data == nil {
-		w.WriteHeader(http.StatusFound)
 		log.Warningf(ctx, "faild to get cache data")
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("failed to get cache"))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
