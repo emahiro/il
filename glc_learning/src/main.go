@@ -18,8 +18,14 @@ func main() {
 	h := r.Build(router.DefaultRouter())
 
 	log.Printf("start server in 8080 port ...")
+	
+	port := os.Getenv("PORT")
+	if port != "" {
+		port = "8080"
+	}
+
 	server := http.Server{
-		Addr:    fmt.Sprintf(":%d", 8080),
+		Addr:    ":"+port,
 		Handler: h,
 	}
 
