@@ -11,12 +11,12 @@ import (
 var ts *httptest.Server
 
 func spinUp() *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return httptest.NewServer(mw()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// この中で何かしらテストをしたいとき
 		fmt.Printf("request in test server. req: %+v\n", r)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("hello in test server."))
-	}))
+	})))
 }
 
 func TestMain(m *testing.M) {
