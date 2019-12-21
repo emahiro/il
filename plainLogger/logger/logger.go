@@ -43,6 +43,13 @@ func (l *logger) output(s string) error {
 
 var std = new(os.Stdout)
 
+func SetOutput(out io.Writer) {
+	std.mu.Lock()
+	defer std.mu.Unlock()
+
+	std.out = out
+}
+
 func Debugf(format string, a ...interface{}) {
 	std.output(fmt.Sprintf(format, a...))
 }
