@@ -14,6 +14,8 @@ import "context"
 
 import "time"
 
+import "github.com/emahiro/log_output/mw"
+
 var port = 8080
 
 func main() {
@@ -25,7 +27,7 @@ func main() {
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: mux,
+		Handler: mw.Logger()(mux),
 	}
 
 	fmt.Printf("start server in port: %v...\n", port)
