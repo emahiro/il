@@ -1,8 +1,9 @@
 package logger
 
-import "time"
-
-import "os"
+import (
+	"os"
+	"time"
+)
 
 func ExampleDebugf() {
 	std = new(os.Stdout)

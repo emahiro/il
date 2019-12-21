@@ -1,20 +1,16 @@
 package main
 
-import "net/http"
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-import "fmt"
-
-import "os"
-
-import "os/signal"
-
-import "syscall"
-
-import "context"
-
-import "time"
-
-import "github.com/emahiro/log_output/mw"
+	"github.com/emahiro/log_output/mw"
+)
 
 var port = 8080
 

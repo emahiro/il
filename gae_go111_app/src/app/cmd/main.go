@@ -31,5 +31,3 @@ func main() {
 		panic(err)
 	}
 }
-
-

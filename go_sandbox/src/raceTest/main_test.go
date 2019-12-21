@@ -1,8 +1,9 @@
 package main
 
-import "testing"
-
-import "sync"
+import (
+	"sync"
+	"testing"
+)
 
 func TestRace(t *testing.T) {
 	itr := []int64{1, 2, 3}

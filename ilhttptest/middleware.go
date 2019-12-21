@@ -1,8 +1,9 @@
 package main
 
-import "net/http"
-
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 func mw() func(http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {

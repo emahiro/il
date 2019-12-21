@@ -21,7 +21,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // RenderHandler is render tmpl file
-func RenderHandler(w http.ResponseWriter, r *http.Request){
+func RenderHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/index.tmpl")
 	if err != nil {
 		panic(err)

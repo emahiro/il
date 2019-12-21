@@ -1,10 +1,11 @@
 package mw
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
 
-import "fmt"
-
-import "github.com/emahiro/log_output/logger"
+	"github.com/emahiro/log_output/logger"
+)
 
 func Logger() func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
