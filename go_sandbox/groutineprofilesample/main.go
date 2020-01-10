@@ -11,6 +11,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/pkg/profile"
 )
 
 var port = 8080
@@ -69,6 +71,7 @@ func main() {
 }
 
 func getUser() (*user, error) {
+	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
 
 	client := http.DefaultClient
 	req, _ := http.NewRequest("GET", "http://localhost:8080/users", nil)
