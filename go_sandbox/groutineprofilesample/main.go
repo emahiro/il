@@ -9,10 +9,9 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
-
-	"github.com/pkg/profile"
 )
 
 var port = 8080
@@ -23,6 +22,7 @@ type user struct {
 }
 
 func main() {
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -70,22 +70,29 @@ func main() {
 	os.Exit(0)
 }
 
-func getUser() (*user, error) {
-	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
-
+func getUser() {
 	client := http.DefaultClient
 	req, _ := http.NewRequest("GET", "http://localhost:8080/users", nil)
 
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
+	cnt := 10
+	wg := sync.WaitGroup{}
+	wg.Add(cnt)
 
-	var user user
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, err
+	for i := 0; i < cnt; i++ {
+		go func() {
+			resp, err := client.Do(req)
+			if err != nil {
+				panic(err)
+			}
+			defer resp.Body.Close()
+
+			var user user
+			if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+				panic(err)
+			}
+			wg.Done()
+		}()
 	}
 
-	return &user, nil
+	wg.Wait()
 }
