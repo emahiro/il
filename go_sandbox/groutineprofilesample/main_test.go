@@ -7,7 +7,7 @@ import (
 )
 
 func TestExecUser(t *testing.T) {
-	defer profile.Start(profile.GoroutineProfile, profile.ProfilePath(".")).Stop()
+	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
 
 	cnt := 3
 	for i := 0; i < cnt; i++ {
