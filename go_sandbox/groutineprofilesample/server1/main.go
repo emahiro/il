@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var port = 8080
+
 func main() {
 
 	mux := http.NewServeMux()
@@ -57,7 +59,7 @@ func getUser() {
 	client := http.DefaultClient
 	req, _ := http.NewRequest("GET", "http://localhost:8081/users", nil)
 
-	cnt := 10
+	cnt := 25
 	wg := sync.WaitGroup{}
 	wg.Add(cnt)
 
