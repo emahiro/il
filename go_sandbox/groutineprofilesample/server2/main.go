@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -8,10 +9,16 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 	"time"
 )
+
+var port = 8081
+
+type user struct {
+	Name string `json:"name"`
+	Age  int64  `json:"age"`
+}
 
 func main() {
 
@@ -20,6 +27,20 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("hello"))
 		return
+	})
+	mux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(1 * time.Second)
+		user := user{Name: "Taro", Age: 12}
+
+		var buf bytes.Buffer
+		if err := json.NewEncoder(&buf).Encode(&user); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(buf.Bytes())
 	})
 
 	server := &http.Server{
@@ -46,36 +67,4 @@ func main() {
 
 	log.Println("success to shutdown")
 	os.Exit(0)
-}
-
-type user struct {
-	Name string `json:"name"`
-	Age  int64  `json:"age"`
-}
-
-func getUser() {
-	client := http.DefaultClient
-	req, _ := http.NewRequest("GET", "http://localhost:8081/users", nil)
-
-	cnt := 10
-	wg := sync.WaitGroup{}
-	wg.Add(cnt)
-
-	for i := 0; i < cnt; i++ {
-		go func() {
-			resp, err := client.Do(req)
-			if err != nil {
-				panic(err)
-			}
-			defer resp.Body.Close()
-
-			var user user
-			if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-				panic(err)
-			}
-			wg.Done()
-		}()
-	}
-
-	wg.Wait()
 }
