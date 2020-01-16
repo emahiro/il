@@ -65,6 +65,7 @@ func getUser() {
 
 	for i := 0; i < cnt; i++ {
 		go func() {
+			defer wg.Done()
 			resp, err := client.Do(req)
 			if err != nil {
 				panic(err)
@@ -75,7 +76,6 @@ func getUser() {
 			if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
 				panic(err)
 			}
-			wg.Done()
 		}()
 	}
 
