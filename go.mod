@@ -1,6 +1,5 @@
 module github.com/emahiro/il
 
-require (
-	github.com/emahiro/ae-plain-logger v0.2.0 // indirect
-	github.com/emahiro/glc v1.1.0 // indirect
-)
+require github.com/pkg/profile v1.4.0
+
+go 1.13
