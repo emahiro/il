@@ -19,6 +19,7 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("hello"))
 	})
+	mux.Handle("/user", &userHandler{})
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
@@ -45,4 +46,16 @@ func main() {
 
 	log.Printf("shutdown server....")
 	os.Exit(0)
+}
+
+type userHandler struct{}
+
+func (h *userHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("unexpected method"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("user handler"))
 }
