@@ -21,7 +21,7 @@ func main() {
 			w.Write([]byte("enexpected request"))
 			return
 		}
-
+		fmt.Println("test")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(fmt.Sprintf("hello at port: %d", port)))
 	})
