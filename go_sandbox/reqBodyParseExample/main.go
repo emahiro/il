@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -47,6 +48,12 @@ func main() {
 
 type handler struct{}
 
+type req struct {
+	A string `json:"a"`
+	B string `json:"b"`
+	C string `json:"c"`
+}
+
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	d, _ := httputil.DumpRequest(r, true)
 	fmt.Println(string(d))
@@ -58,5 +65,11 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusInternalServerError)))
 		return
 	}
-	w.Write(b)
+
+	req := &req{}
+	if err := json.Unmarshal(b, req); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(req)
+	w.Write([]byte("ok"))
 }
