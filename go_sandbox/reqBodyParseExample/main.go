@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"os/signal"
 	"syscall"
@@ -23,6 +24,7 @@ func main() {
 		Addr:    fmt.Sprintf(":%d", port),
 	}
 
+	log.Println("start server....")
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			panic(err)
@@ -46,6 +48,9 @@ func main() {
 type handler struct{}
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	d, _ := httputil.DumpRequest(r, true)
+	fmt.Println(string(d))
+
 	w.WriteHeader(http.StatusOK)
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
