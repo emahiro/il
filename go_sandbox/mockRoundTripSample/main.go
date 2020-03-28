@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/emahiro/il/go_sandbox/mockRoundTripSample/api/hatena"
 	"github.com/emahiro/il/go_sandbox/mockRoundTripSample/mw"
 )
 
@@ -20,6 +21,24 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(http.StatusText(http.StatusOK)))
+	})
+	mux.HandleFunc("/hatena", func(w http.ResponseWriter, r *http.Request) {
+		feed, err := hatena.GetHatenaFeed()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		b, err := feed.ToBytes()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
 	})
 
 	s := &http.Server{
