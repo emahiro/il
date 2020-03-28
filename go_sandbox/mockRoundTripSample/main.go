@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/emahiro/il/go_sandbox/mockRoundTripSample/mw"
 )
 
 var port = 8080
@@ -22,7 +24,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: mux,
+		Handler: mw.Logger(mux),
 	}
 
 	log.Printf("starting server at %d ...\n", port)
