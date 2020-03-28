@@ -23,7 +23,7 @@ func main() {
 		w.Write([]byte(http.StatusText(http.StatusOK)))
 	})
 	mux.HandleFunc("/hatena", func(w http.ResponseWriter, r *http.Request) {
-		feed, err := hatena.GetHatenaFeed()
+		feed, err := hatena.FetchFeed()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
