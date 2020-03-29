@@ -10,7 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/emahiro/il/go_sandbox/mockRoundTripSample/api/hatena"
+	"github.com/emahiro/hbhcl"
+
 	"github.com/emahiro/il/go_sandbox/mockRoundTripSample/mw"
 )
 
@@ -23,14 +24,7 @@ func main() {
 		w.Write([]byte(http.StatusText(http.StatusOK)))
 	})
 	mux.HandleFunc("/hatena", func(w http.ResponseWriter, r *http.Request) {
-		feed, err := hatena.FetchFeed()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		b, err := feed.ToBytes()
+		feed, err := hbhcl.FetchFeed()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
@@ -38,7 +32,7 @@ func main() {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write(b)
+		w.Write([]byte(feed.Entries[0].Title))
 	})
 
 	s := &http.Server{
