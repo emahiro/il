@@ -24,7 +24,7 @@ func main() {
 		w.Write([]byte(http.StatusText(http.StatusOK)))
 	})
 	mux.HandleFunc("/hatena", func(w http.ResponseWriter, r *http.Request) {
-		feed, err := hbhcl.FetchFeed()
+		feed, err := hbhcl.NewClient("ema-hiro").FetchFeed()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
