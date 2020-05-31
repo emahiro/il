@@ -1,5 +1,5 @@
 import { listenAndServe, ServerRequest} from "https://deno.land/std@0.54.0/http/server.ts";
-import { Status } from "https://deno.land/std@0.54.0/http/http_status.ts";
+import { Status, STATUS_TEXT } from "https://deno.land/std@0.54.0/http/http_status.ts";
 import { entryHandler } from "./handler.ts";
 
 const port = 8080;
@@ -21,6 +21,10 @@ listenAndServe(options, (request: ServerRequest) => {
     const path = normalizedUrl.split('/')[1]
     console.log(path)
     switch (path) {
+        case '':
+        case '/':
+            request.respond({ status: Status.OK, body: 'OK! This is root handler!' })
+            break;
         case 'entries':
             entryHandler(request)
             break;
