@@ -11,5 +11,5 @@ export async function entryHandler(req: ServerRequest): Promise<void> {
 }
 
 async function getEntryHandler(req: ServerRequest): Promise<void> {
-    console.log("get entry handler")
+    return req.respond({status: Status.OK, body: "OK! This is entory handler."})
 }
