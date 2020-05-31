@@ -5,11 +5,11 @@ import { entryHandler } from "./handler.ts";
 const port = 8080;
 const options = {port: port}
 listenAndServe(options, (request: ServerRequest) => {
-    const s = request.url.split('?')[0]
+    // request.url には /pathName が入ってくる
+    const s = request.url.split('?')
     if (s.length == 0) {
-        request.respond({status: 400, body: 'Unexpected url'})
+        request.respond({ status: 400, body: 'Unexpected url' })
     }
-
     const normalizedUrl = s[0]
     // let rawQueryParams = ''
     // if (s.length >= 2){
@@ -17,8 +17,9 @@ listenAndServe(options, (request: ServerRequest) => {
     //     rawQueryParams = s[1]
     // }
 
-    // https://localhost:8080/:path => ['https:','','localhost:8080', ':path',..]
-    const path = normalizedUrl.split('/')[3]
+    // https://localhost:8080/path => ['', 'path',..]
+    const path = normalizedUrl.split('/')[1]
+    console.log(path)
     switch (path) {
         case 'entries':
             entryHandler(request)
