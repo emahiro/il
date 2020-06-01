@@ -8,7 +8,7 @@ listenAndServe(options, (request: ServerRequest) => {
     // request.url には /pathName が入ってくる
     const s = request.url.split('?')
     if (s.length == 0) {
-        request.respond({ status: 400, body: 'Unexpected url' })
+        return request.respond({ status: 400, body: 'Unexpected url' })
     }
     const normalizedUrl = s[0]
     // let rawQueryParams = ''
@@ -18,18 +18,20 @@ listenAndServe(options, (request: ServerRequest) => {
     // }
 
     // https://localhost:8080/path => ['', 'path',..]
-    const path = normalizedUrl.split('/')[1]
-    console.log(path)
+    const re = /^\/[a-zA-Z0-9]+$/
+    const r = normalizedUrl.match(re)
+    if (r === null) {
+        if (normalizedUrl === '/') {
+            return request.respond({ status: Status.OK, body: 'OK! This is root handler!' })
+        }
+        return request.respond({ status: Status.NotFound, body: 'status not found: url is ' + normalizedUrl })
+    }
+
+    const path = r[0]
     switch (path) {
-        case '':
-        case '/':
-            request.respond({ status: Status.OK, body: 'OK! This is root handler!' })
-            break;
-        case 'entries':
-            entryHandler(request)
-            break;
+        case '/entries':
+            return entryHandler(request)
         default:
-            request.respond({ status: Status.NotFound})
-            break;
+            return request.respond({ status: Status.NotFound, body: 'status not found: url is ' + normalizedUrl})
     }
 })
