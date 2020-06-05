@@ -1,3 +1,6 @@
+.PHONY: build
+build:
+	docker build -t deno-api-app .
 
 .PHONY: run
 run:
