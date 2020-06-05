@@ -1,4 +1,4 @@
 
 .PHONY: run
 run:
-	deno run --allow-net --importmap=import_map.json --unstable main.ts
+	deno run --allow-net --unstable main.ts
