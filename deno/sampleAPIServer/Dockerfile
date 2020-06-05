@@ -13,5 +13,5 @@ COPY . .
 
 RUN deno cache main.ts
 
-CMD ["run", "--allow-net", "main.ts"]
+CMD ["run", "--allow-net", "--importmap=import_map.json", "--unstable", "main.ts"]
 
