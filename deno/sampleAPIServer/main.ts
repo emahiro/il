@@ -1,8 +1,13 @@
-import { serve} from "https://deno.land/std@0.54.0/http/server.ts";
+import { Application } from "https://deno.land/x/oak@v5.3.1/mod.ts";
 
-const port = 8080;
-const s = serve({ port: port });
-console.log("Starting server port: ", port);
-for await (const req of s) {
-    req.respond({ body: "Hello World\n" });
-}
+const port:number = 8080;
+const app = new Application()
+
+app.use((ctx) => {
+    ctx.response.body = "Hello oak app !!!"
+})
+app.addEventListener("listen", ({ hostname, port}) => {
+    console.log(`Start server on ${hostname}:${port}`);
+  });
+await app.listen({hostname: "127.0.0.1", port: port})
+console.log("Shutdown server.")
