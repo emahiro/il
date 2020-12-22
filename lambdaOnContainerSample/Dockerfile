@@ -1,6 +1,6 @@
-FROM golang:1.15.6-buster
+FROM golang:1.15.6-alpine
 
-WORKDIR /go/src/app
+WORKDIR /src/app
 COPY . .
 
 RUN go get -d -v ./...
