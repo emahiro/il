@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/go:1.x
+FROM public.ecr.aws/lambda/go:latest
 
 WORKDIR /src/app
 COPY . .
