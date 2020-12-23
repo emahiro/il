@@ -1,4 +1,4 @@
-FROM golang:1.15.6-alpine
+FROM public.ecr.aws/lambda/go:1.x
 
 WORKDIR /src/app
 COPY . .
