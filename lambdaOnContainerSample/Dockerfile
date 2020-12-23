@@ -1,9 +1,14 @@
-FROM public.ecr.aws/lambda/go:latest
+FROM public.ecr.aws/lambda/provided:al2 as build
 
-WORKDIR /src/app
+RUN yum install -y golang
+RUN go env -w GOPROXY=direct
+
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
+RUN go build -o /main
 
-RUN go get -d -v ./...
-RUN go install -v ./...
-
-CMD ["app"]
+FROM public.ecr.aws/lambda/provided:al2
+COPY --from=build /main /main
+ENTRYPOINT [ "/main" ]
