@@ -1,11 +1,11 @@
 fn main() {
     let num = 10;
     let fizzbuss = if num == 15 {
-        "FizzBuzz"
+        "FizzBuzz".to_string()
     } else if num == 5 {
-        "Buzz"
+        "Buzz".to_string()
     } else{
-        "Fizz"
+        "Fizz".to_string()
     };
     println!("{}", fizzbuss);
 }
