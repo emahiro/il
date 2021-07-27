@@ -12,12 +12,4 @@ fn main() {
         "Fizz".to_string()
     };
     println!("{}", fizzbuss);
-    iter()
-
-}
-
-fn iter() {
-    for num in 0..100{
-        println!("{}", num)
-    }
 }
