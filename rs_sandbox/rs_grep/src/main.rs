@@ -34,10 +34,7 @@ fn main() {
     let filepath = args().nth(2);
 
     match (pattern, filepath) {
-        (Some(pattern), Some(filepath)) => {
-            let state = GrepArgs::new(filepath, pattern);
-            run(state);
-        }
+        (Some(pattern), Some(filepath)) => run(GrepArgs::new(filepath, pattern)),
         _ => println!("Pattern or path is not specified.\n"),
     };
 }
