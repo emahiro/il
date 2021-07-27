@@ -1,4 +1,4 @@
-use std::fs::read_to_string;
+use std::{env::args, fs::read_to_string};
 
 fn run_cat(path: String) {
     match read_to_string(path) {
@@ -8,6 +8,8 @@ fn run_cat(path: String) {
 }
 
 fn main() {
-    let path = "./src/main.rs".to_string();
-    run_cat(path);
+    match args().nth(1) {
+        Some(path) => run_cat(path),
+        None => print!("No path is specified")
+    }
 }
