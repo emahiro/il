@@ -1,5 +1,19 @@
 use std::{env::args, fs::read_to_string};
 
+struct GrepArgs {
+    pattern: String,
+    filepath: String,
+}
+
+impl GrepArgs {
+    fn new(filepath: String, pattern: String) -> GrepArgs {
+        GrepArgs {
+            pattern: pattern,
+            filepath: filepath,
+        }
+    }
+}
+
 fn grep(content: String, pattern: String) {
     for line in content.lines() {
         if line.contains(pattern.as_str()) {
@@ -8,9 +22,9 @@ fn grep(content: String, pattern: String) {
     }
 }
 
-fn run(filepath: String, pattern: String) {
-    match read_to_string(filepath) {
-        Ok(content) => grep(content, pattern),
+fn run(state: GrepArgs) {
+    match read_to_string(state.filepath) {
+        Ok(content) => grep(content, state.pattern),
         Err(error) => println!("error: {}\n", error),
     };
 }
@@ -20,7 +34,10 @@ fn main() {
     let filepath = args().nth(2);
 
     match (pattern, filepath) {
-        (Some(pattern), Some(filepath)) => run(filepath, pattern),
+        (Some(pattern), Some(filepath)) => {
+            let state = GrepArgs::new(filepath, pattern);
+            run(state);
+        }
         _ => println!("Pattern or path is not specified.\n"),
     };
 }
