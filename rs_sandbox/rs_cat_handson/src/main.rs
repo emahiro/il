@@ -8,8 +8,7 @@ fn run_cat(path: String) {
 }
 
 fn main() {
-    match args().nth(1) {
-        Some(path) => run_cat(path),
-        None => print!("No path is specified\n")
+    if let Some(path) = args().nth(1) {
+        run_cat(path)
     }
 }
