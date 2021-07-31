@@ -23,13 +23,19 @@ func main() {
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	i := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
-	filter := []ast.Node{}
+	filter := []ast.Node{
+		(*ast.FuncDecl)(nil),
+	}
 	i.Preorder(filter, func(n ast.Node) {
 		// 必要であればテストファイルは検査から外す。
 		if strings.HasSuffix(pass.Fset.File(n.Pos()).Name(), "_test.go") {
 			return
 		}
-		return
+
+		switch n := n.(type) {
+		case *ast.FuncDecl:
+			pass.Reportf(n.Pos(), "func declaration is %#v", n)
+		}
 	})
 	return nil, nil
 }
