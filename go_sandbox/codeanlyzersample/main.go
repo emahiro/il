@@ -34,7 +34,13 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 		switch n := n.(type) {
 		case *ast.FuncDecl:
-			pass.Reportf(n.Pos(), "func declaration is %#v", n)
+			name := n.Name.Name
+			if name == "Sample" {
+				pass.Reportf(n.Pos(), "Sample 関数があります！")
+			}
+			if name == "SampleWithContext" {
+				pass.Reportf(n.Pos(), "SampleWithContext 関数があります")
+			}
 		}
 	})
 	return nil, nil
