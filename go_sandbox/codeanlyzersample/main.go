@@ -36,10 +36,44 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		case *ast.FuncDecl:
 			name := n.Name.Name
 			if name == "Sample" {
-				pass.Reportf(n.Pos(), "Sample 関数があります！")
+				pass.Report(
+					analysis.Diagnostic{
+						Pos:     n.Pos(),
+						End:     n.End(),
+						Message: "change Sample to Example",
+						SuggestedFixes: []analysis.SuggestedFix{
+							{
+								Message: "Sample -> Example",
+								TextEdits: []analysis.TextEdit{
+									{
+										Pos:     n.Pos(),
+										End:     n.End(),
+										NewText: []byte("Example"),
+									},
+								},
+							},
+						},
+					},
+				)
 			}
 			if name == "SampleWithContext" {
-				pass.Reportf(n.Pos(), "SampleWithContext 関数があります")
+				pass.Report(analysis.Diagnostic{
+					Pos:     n.Pos(),
+					End:     n.End(),
+					Message: "change SampleWithContext to ExampleContext",
+					SuggestedFixes: []analysis.SuggestedFix{
+						{
+							Message: "Sample -> Example",
+							TextEdits: []analysis.TextEdit{
+								{
+									Pos:     n.Pos(),
+									End:     n.End(),
+									NewText: []byte("ExampleWithContext"),
+								},
+							},
+						},
+					},
+				})
 			}
 		}
 	})
