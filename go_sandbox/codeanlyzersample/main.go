@@ -60,7 +60,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				pass.Report(analysis.Diagnostic{
 					Pos:     n.Pos(),
 					End:     n.End(),
-					Message: "change SampleWithContext to ExampleContext",
+					Message: "change SampleWithContext to ExampleWithContext",
 					SuggestedFixes: []analysis.SuggestedFix{
 						{
 							Message: "Sample -> Example",

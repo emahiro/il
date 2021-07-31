@@ -7,10 +7,10 @@ func main() {
 	SampleWithContext(context.Background())
 }
 
-func Sample() error {
+func Sample() error { // want `change Sample to Example`
 	return nil
 }
 
-func SampleWithContext(ctx context.Context) error {
+func SampleWithContext(ctx context.Context) error { // want `change SampleWithContext to ExampleWithContext`
 	return nil
 }
