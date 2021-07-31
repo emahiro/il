@@ -34,20 +34,20 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 		switch n := n.(type) {
 		case *ast.FuncDecl:
-			name := n.Name.Name
-			if name == "Sample" {
+			ident := n.Name
+			if ident.Name == "Sample" {
 				pass.Report(
 					analysis.Diagnostic{
-						Pos:     n.Pos(),
-						End:     n.End(),
+						Pos:     ident.Pos(),
+						End:     ident.End(),
 						Message: "change Sample to Example",
 						SuggestedFixes: []analysis.SuggestedFix{
 							{
 								Message: "Sample -> Example",
 								TextEdits: []analysis.TextEdit{
 									{
-										Pos:     n.Pos(),
-										End:     n.End(),
+										Pos:     ident.Pos(),
+										End:     ident.End(),
 										NewText: []byte("Example"),
 									},
 								},
@@ -56,18 +56,18 @@ func run(pass *analysis.Pass) (interface{}, error) {
 					},
 				)
 			}
-			if name == "SampleWithContext" {
+			if ident.Name == "SampleWithContext" {
 				pass.Report(analysis.Diagnostic{
-					Pos:     n.Pos(),
-					End:     n.End(),
+					Pos:     ident.Pos(),
+					End:     ident.End(),
 					Message: "change SampleWithContext to ExampleWithContext",
 					SuggestedFixes: []analysis.SuggestedFix{
 						{
 							Message: "Sample -> Example",
 							TextEdits: []analysis.TextEdit{
 								{
-									Pos:     n.Pos(),
-									End:     n.End(),
+									Pos:     ident.Pos(),
+									End:     ident.End(),
 									NewText: []byte("ExampleWithContext"),
 								},
 							},
