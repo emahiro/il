@@ -1,0 +1,16 @@
+package a
+
+import "context"
+
+func main() {
+	Sample()
+	SampleWithContext(context.Background())
+}
+
+func Example() error { // want `change Sample to Example`
+	return nil
+}
+
+func ExampleWithContext(ctx context.Context) error { // want `change SampleWithContext to ExampleWithContext`
+	return nil
+}
