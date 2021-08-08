@@ -20,9 +20,11 @@ func TestRouter(t *testing.T) {
 	}))
 	t.Cleanup(ts.Close)
 
-	t.Log(ts.URL)
-
 	req, _ := http.NewRequest(http.MethodGet, ts.URL, nil)
+	req.AddCookie(&http.Cookie{
+		Name:  "test",
+		Value: "test",
+	})
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
