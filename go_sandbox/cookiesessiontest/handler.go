@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/gorilla/sessions"
 )
 
 var (
@@ -21,14 +19,6 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	store := sessions.NewCookieStore(keyPairs)
-	store.Options = &sessions.Options{}
-	session, err := store.Get(r, ckName)
-	if err != nil {
-		// refresh session
-		session = sessions.NewSession(store, ckName)
-	}
-
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("OK. cookie name is %s value is %#v", session.Name(), session.Values["test"])))
+	w.Write([]byte(fmt.Sprintf("OK.")))
 }

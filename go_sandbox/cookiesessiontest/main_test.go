@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
 )
 
 func TestMain(m *testing.M) {
@@ -47,4 +48,25 @@ func TestRouter(t *testing.T) {
 	}
 
 	t.Logf("%s", string(b))
+}
+
+func TestRouterWithMiddleware(t *testing.T) {
+	codec := securecookie.CodecsFromPairs(keyPairs)
+	ckstr, err := codec[0].Encode(ckName, map[interface{}]interface{}{
+		"test": "test",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest(http.MethodGet, "http://test.com/get", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  ckName,
+		Value: ckstr,
+	})
+
+	rec := httptest.NewRecorder()
+	mux := http.NewServeMux()
+	h := &Handler{}
+	mux.HandleFunc("/get", h.Get)
+	SessionCookie(&sessions.Options{}, mux).ServeHTTP(rec, req)
 }
