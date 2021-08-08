@@ -3,6 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/sessions"
+)
+
+var (
+	ckName   = "test"
+	keyPairs = []byte("test")
 )
 
 type Handler struct{}
@@ -13,13 +20,15 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(http.StatusText(http.StatusMethodNotAllowed)))
 		return
 	}
-	ck, err := r.Cookie("test")
+
+	store := sessions.NewCookieStore(keyPairs)
+	store.Options = &sessions.Options{}
+	session, err := store.Get(r, ckName)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(http.StatusText(http.StatusUnauthorized)))
-		return
+		// refresh session
+		session = sessions.NewSession(store, ckName)
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("OK. cookie value is %#v", ck)))
+	w.Write([]byte(fmt.Sprintf("OK. cookie name is %s value is %#v", session.Name(), session.Values["test"])))
 }

@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/gorilla/securecookie"
 )
 
 func TestMain(m *testing.M) {
@@ -21,10 +23,18 @@ func TestRouter(t *testing.T) {
 	t.Cleanup(ts.Close)
 
 	req, _ := http.NewRequest(http.MethodGet, ts.URL, nil)
+	codec := securecookie.CodecsFromPairs(keyPairs)
+	ckstr, err := codec[0].Encode("test", map[interface{}]interface{}{
+		"test": "test",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	req.AddCookie(&http.Cookie{
 		Name:  "test",
-		Value: "test",
+		Value: ckstr,
 	})
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
