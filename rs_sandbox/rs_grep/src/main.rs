@@ -1,4 +1,4 @@
-use std::{fs::read_to_string};
+use std::fs::read_to_string;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -7,7 +7,7 @@ struct GrepArgs {
     #[structopt(name = "PATTERN")]
     pattern: String,
     #[structopt(name = "FILEPATH")]
-    filepath: String,
+    filepath: Vec<String>,
 }
 
 impl GrepArgs {}
@@ -21,10 +21,12 @@ fn grep(content: String, state: &GrepArgs) {
 }
 
 fn run(state: GrepArgs) {
-    match read_to_string(&state.filepath) {
-        Ok(content) => grep(content, &state),
-        Err(error) => println!("error: {}\n", error),
-    };
+    for filepath in state.filepath.iter() {
+        match read_to_string(filepath) {
+            Ok(content) => grep(content, &state),
+            Err(err) => println!("error: {}\n", err),
+        }
+    }
 }
 
 fn main() {
