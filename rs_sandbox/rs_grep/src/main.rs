@@ -13,9 +13,11 @@ struct GrepArgs {
 impl GrepArgs {}
 
 fn grep(content: String, state: &GrepArgs, file_name: &String) {
+    let mut n = 0;
     for line in content.lines() {
+        n = n + 1;
         if line.contains(state.pattern.as_str()) {
-            println!("{}: {}\n", file_name, line);
+            println!("{}:L{} {}\n", file_name, n, line);
         }
     }
 }
