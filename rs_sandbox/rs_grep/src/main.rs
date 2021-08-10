@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::fs::read_to_string;
 use structopt::StructOpt;
 
@@ -23,12 +24,13 @@ fn grep(content: String, state: &GrepArgs, file_name: &String) {
 }
 
 fn run(state: GrepArgs) {
-    for file in state.files.iter() {
-        match read_to_string(file) {
+    state
+        .files
+        .par_iter()
+        .for_each(|file| match read_to_string(file) {
             Ok(content) => grep(content, &state, file),
             Err(err) => println!("error: {}\n", err),
-        }
-    }
+        })
 }
 
 fn main() {
