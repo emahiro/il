@@ -12,10 +12,11 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("$DatabaseName", "$SourceName")
-	if err != nil {
-		panic(err)
-	}
+	db := &sql.DB{}
+	// db, err := sql.Open("$DatabaseName", "$SourceName")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	r := http.NewServeMux()
 	user := handler.NewUserHandler(
