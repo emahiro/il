@@ -26,9 +26,9 @@ func NewUserManager(
 }
 
 type UserRegisterParams struct {
-	Name string
-	Mail string
-	Age  int64
+	Name string `json:"name"`
+	Mail string `json:"mail"`
+	Age  int64  `json:"age"`
 }
 
 func (m *UserManager) Register(ctx context.Context, p UserRegisterParams) error {
