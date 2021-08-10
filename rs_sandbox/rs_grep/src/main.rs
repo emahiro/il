@@ -12,10 +12,10 @@ struct GrepArgs {
 
 impl GrepArgs {}
 
-fn grep(content: String, state: &GrepArgs) {
+fn grep(content: String, state: &GrepArgs, file_name:&String) {
     for line in content.lines() {
         if line.contains(state.pattern.as_str()) {
-            println!("{}\n", line);
+            println!("{}: {}\n",file_name, line);
         }
     }
 }
@@ -23,7 +23,7 @@ fn grep(content: String, state: &GrepArgs) {
 fn run(state: GrepArgs) {
     for filepath in state.filepath.iter() {
         match read_to_string(filepath) {
-            Ok(content) => grep(content, &state),
+            Ok(content) => grep(content, &state, filepath),
             Err(err) => println!("error: {}\n", err),
         }
     }
