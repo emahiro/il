@@ -1,4 +1,4 @@
-use std::io;
+use std::{io, process::exit};
 
 use rand::Rng;
 
@@ -24,8 +24,12 @@ fn main() {
 
         match guess.cmp(&secret_number) {
             std::cmp::Ordering::Less => println!("Too small"),
-            std::cmp::Ordering::Equal => println!("You win !!!"),
             std::cmp::Ordering::Greater => println!("Too Big"),
+            std::cmp::Ordering::Equal => {
+                println!("You win !!!");
+                break;
+            },
         };
     }
+    exit(0)
 }
