@@ -17,6 +17,8 @@ fn main() {
         .read_line(&mut guess)
         .expect("failed to read line.");
 
+    let guess: u32 = guess.trim().parse().expect("failed to parse guess number");
+
     println!("You guessed: {}", guess);
 
     match guess.cmp(&secret_number) {
