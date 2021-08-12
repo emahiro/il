@@ -6,9 +6,12 @@ fn main() {
 
     let mut guess = String::new();
 
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line.");
+    match io::stdin().read_line(&mut guess) {
+        Ok(input) => {
+            println!("input is {}", input);
+        }
+        Err(error) => println!("failed to read line. error {}", error),
+    }
 
     println!("You guessed: {}", guess)
 }
