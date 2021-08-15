@@ -27,6 +27,34 @@ impl Animal for Cat {
     }
 }
 
+trait Car {
+    fn new() -> Self;
+    fn name(&self) -> String;
+    fn made_from(&self) -> String;
+}
+
+struct Prius {
+    kind: String,
+    maker: String,
+}
+
+impl Car for Prius {
+    fn new() -> Self {
+        return Prius {
+            kind: "Prius".to_string(),
+            maker: "Toyota".to_string(),
+        };
+    }
+
+    fn name(&self) -> String {
+        return format!("{}", self.kind);
+    }
+
+    fn made_from(&self) -> String {
+        return format!("{}", self.maker);
+    }
+}
+
 fn main() {
     let dog = Dog {};
     dog.bark();
@@ -35,5 +63,9 @@ fn main() {
     cat.bark();
 
     println!("{}", dog.life_span());
-    println!("{}", cat.life_span())
+    println!("{}", cat.life_span());
+
+    let prius = Prius::new();
+    println!("{}", prius.kind);
+    println!("made from {}", prius.made_from())
 }
