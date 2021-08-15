@@ -1,6 +1,6 @@
-use my_crate::modules::my_module;
+use my_crate::modules::calc;
 
-fn main(){
-    my_module::calc();
-    println!("{}", "hello")
+fn main() {
+    let ans = calc::add(1,2);
+    println!("answer = {}", ans);
 }
