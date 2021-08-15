@@ -1,1 +1,1 @@
-mod my_module;
+pub mod my_module;
