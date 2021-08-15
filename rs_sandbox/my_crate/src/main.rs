@@ -1,4 +1,4 @@
-use my_crate::my_module;
+use my_crate::modules::my_module;
 
 fn main(){
     my_module::calc();
