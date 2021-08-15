@@ -1,3 +1,2 @@
-mod my_module {
-    fn calc() {}
-}
+pub fn calc() {}
+
