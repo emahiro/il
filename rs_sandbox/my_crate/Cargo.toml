@@ -1,5 +1,5 @@
 [package]
-name = "rs_crait_example"
+name = "my_crate"
 version = "0.1.0"
 edition = "2018"
 
