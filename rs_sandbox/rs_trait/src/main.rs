@@ -34,24 +34,42 @@ trait Car {
 }
 
 struct Prius {
-    kind: String,
     maker: String,
 }
 
 impl Car for Prius {
     fn new() -> Self {
         return Prius {
-            kind: "Prius".to_string(),
             maker: "Toyota".to_string(),
         };
     }
 
     fn name(&self) -> String {
-        return format!("{}", self.kind);
+        return format!("{}", "Prius");
     }
 
     fn made_from(&self) -> String {
         return format!("{}", self.maker);
+    }
+}
+
+struct Note{
+    maker:String,
+}
+
+impl Car for Note {
+    fn new() -> Self {
+        return Note{
+            maker: "Nissan".to_string(),
+        };
+    }
+
+    fn name(&self) -> String {
+        return "Note".to_string();
+    }
+
+    fn made_from(&self) -> String {
+        return self.maker;
     }
 }
 
@@ -66,6 +84,10 @@ fn main() {
     println!("{}", cat.life_span());
 
     let prius = Prius::new();
-    println!("{}", prius.kind);
-    println!("made from {}", prius.made_from())
+    println!("{}", prius.name());
+    println!("made from {}", prius.made_from());
+
+    let note = Note::new();
+    println!("{}", note.name());
+    println!("{}", note.made_from());
 }
