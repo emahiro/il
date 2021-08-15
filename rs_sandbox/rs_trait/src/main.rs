@@ -69,7 +69,11 @@ impl Car for Note {
     }
 
     fn made_from(&self) -> String {
-        return self.maker;
+        // self.maker だけだと self は借用してるだけで made_from が完了したら
+        // 確保してたメモリは解放してしまう。そのため値を copy して再度戻す必要がある。
+        // ちなみに clone じゃなく to_string でも可能（to_string の内部で copy が
+        // 走ってる？）
+        return self.maker.clone();
     }
 }
 
