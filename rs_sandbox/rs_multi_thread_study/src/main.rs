@@ -1,3 +1,7 @@
+use std::thread::{self};
+
 fn main() {
-    println!("Hello, world!");
+    thread::spawn(|| {
+        println!("hello world");
+    });
 }
