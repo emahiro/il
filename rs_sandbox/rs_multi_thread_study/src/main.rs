@@ -1,5 +1,4 @@
 use std::{
-    error,
     thread::{self},
 };
 
@@ -7,7 +6,7 @@ fn main() {
     // create 10 threads
     let mut handles = Vec::new();
 
-    for x in 0..10{
+    for x in 0..10 {
         let handle = thread::spawn(move || {
             println!("hello world! - {}", x);
         });
