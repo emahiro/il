@@ -8,7 +8,7 @@ fn main() {
     let mut handles = Vec::new();
 
     for x in 0..10{
-        let handle = thread::spawn(|| {
+        let handle = thread::spawn(move || {
             println!("hello world! - {}", x);
         });
         handles.push(handle)
