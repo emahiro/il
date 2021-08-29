@@ -1,15 +1,18 @@
-use std::{sync::Arc, thread::{self}};
+use std::{
+    sync::{Arc, Mutex},
+    thread::{self},
+};
 
 fn main() {
     // create 10 threads
     let mut handles = Vec::new();
-    let mut data = Arc::new(vec![1; 10]);
-    println!("{:?}", data);
+    let data = Arc::new(Mutex::new(vec![1; 10]));
 
     for x in 0..10 {
         let data_ref = data.clone();
         let handle = thread::spawn(move || {
-            data_ref[x] += 1;
+            let mut data = data_ref.lock().unwrap();
+            data[x] += 1;
         });
         handles.push(handle)
     }
