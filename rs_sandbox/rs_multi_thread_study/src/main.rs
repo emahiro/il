@@ -1,14 +1,14 @@
-use std::{
-    thread::{self},
-};
+use std::thread::{self};
 
 fn main() {
     // create 10 threads
     let mut handles = Vec::new();
+    let mut data = vec![1; 10];
+    println!("{:?}", data);
 
     for x in 0..10 {
         let handle = thread::spawn(move || {
-            println!("hello world! - {}", x);
+            data[x] += 1;
         });
         handles.push(handle)
     }
@@ -19,4 +19,8 @@ fn main() {
             _ => (),
         }
     }
+
+    match dbg!(data) {
+        _ => (),
+    };
 }
