@@ -1,9 +1,9 @@
-use std::{rc::Rc, thread::{self}};
+use std::{sync::Arc, thread::{self}};
 
 fn main() {
     // create 10 threads
     let mut handles = Vec::new();
-    let mut data = Rc::new(vec![1; 10]);
+    let mut data = Arc::new(vec![1; 10]);
     println!("{:?}", data);
 
     for x in 0..10 {
