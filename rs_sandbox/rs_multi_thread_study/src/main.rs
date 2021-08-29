@@ -1,14 +1,15 @@
-use std::thread::{self};
+use std::{rc::Rc, thread::{self}};
 
 fn main() {
     // create 10 threads
     let mut handles = Vec::new();
-    let mut data = vec![1; 10];
+    let mut data = Rc::new(vec![1; 10]);
     println!("{:?}", data);
 
     for x in 0..10 {
+        let data_ref = data.clone();
         let handle = thread::spawn(move || {
-            data[x] += 1;
+            data_ref[x] += 1;
         });
         handles.push(handle)
     }
