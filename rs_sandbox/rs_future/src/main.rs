@@ -46,6 +46,6 @@ fn main() {
     // }
 
     let _ = executor::block_on(something_great_async_function());
-    let _ = move_to_async_block();
+    let _ = executor::block_on(move_to_async_block());
 
 }
