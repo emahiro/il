@@ -1,7 +1,4 @@
-use std::{
-    pin::Pin,
-    task::{Context, Poll},
-};
+use std::{pin::Pin, process::Output, task::{Context, Poll}};
 
 use futures::{executor, future::join_all, Future};
 
@@ -32,6 +29,13 @@ async fn something_great_async_function() -> i32 {
     return ans
 }
 
+fn move_to_async_block() -> impl Future<Output = ()> {
+    let outside_variable = "this is outside".to_string();
+    async move {
+        println!("this is {}", outside_variable);
+    }
+}
+
 fn main() {
     // let countdown_future1 = CountDown(10);
     // let countdown_future2 = CountDown(20);
@@ -42,5 +46,6 @@ fn main() {
     // }
 
     let _ = executor::block_on(something_great_async_function());
+    let _ = move_to_async_block();
 
 }
