@@ -1,9 +1,7 @@
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
-    net::TcpListener,
-};
+use mini_redis::{Result};
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // comment out
+pub async fn main() -> Result<()> {
+
+    Ok(())
 }
