@@ -1,43 +1,20 @@
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
-    net::TcpListener,
-};
+use mini_redis::{Connection, Frame};
+use tokio::{net::{TcpListener, TcpStream}};
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind("127.0.0.1:8080").await?;
-
+pub async fn main(){
+    let listener = TcpListener::bind("127.0.0.1:6379").await.unwrap();
     loop {
-        let (mut socket, _) = listener.accept().await?;
-
-        tokio::spawn(async move {
-            let mut buf = [0; 1024];
-
-            loop {
-                let n = match socket.read(&mut buf).await {
-                    Ok(n) if n == 0 => return,
-                    Ok(n) => n,
-                    Err(error) => {
-                        eprintln!("failed to read from socket. error: {}", error);
-                        return;
-                    }
-                };
-
-                println!("Accept!");
-                match socket.write_all(&buf[0..n]).await {
-                    Ok(n) => {
-                        println!("success to write all. {:#?}", n)
-                    }
-                    Err(e) => println!("failed to write buffer. error: {}", e),
-                };
-                // socket.write_all(&buf[0..n]).await.expect("message") とも書ける。
-                //
-                // https://github.com/tokio-rs/tokio#readme では以下のように書かれている。
-                //  if let Err(e) = socket.write_all(&buf[0..n]).await {
-                //     eprintln!("failed to write to socket; err = {:?}", e);
-                //     return;
-                // }
-            }
-        });
+        let (socket, _) = listener.accept().await.unwrap();
+        process(socket).await;
     }
+}
+
+async fn process(socket: TcpStream) {
+    let mut conn = Connection::new(socket);
+    if let Some(frame) = conn.read_frame().await.unwrap() {
+        println!("GOT: {:?}", frame);
+        let resp = Frame::Error("unimplemented".to_string());
+        conn.write_frame(&resp).await.unwrap();
+    };
 }
