@@ -32,6 +32,21 @@ func main() {
 	fmt.Println(bb)
 	cc := SumT(stringMap)
 	fmt.Println(cc)
+
+	fmt.Println("more generic below")
+	m1 := map[int]int64{
+		1: 1,
+		2: 2,
+	}
+	aaa := Sum(m1)
+	fmt.Println(aaa)
+
+	m2 := map[float32]float64{
+		1.1: 1.1,
+		2.2: 2.2,
+	}
+	bbb := Sum(m2)
+	fmt.Println(bbb)
 }
 
 func SumInts(m map[string]int64) int64 {
@@ -64,4 +79,12 @@ func SumT[T int64 | float64 | string](m map[string]T) T {
 		s += v
 	}
 	return s
+}
+
+func Sum[K comparable, T int64 | float64 | string](m map[K]T) T {
+	var t T
+	for _, v := range m {
+		t += v
+	}
+	return t
 }
