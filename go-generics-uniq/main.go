@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	intMap := map[string]int64{
@@ -47,6 +49,22 @@ func main() {
 	}
 	bbb := Sum(m2)
 	fmt.Println(bbb)
+
+	fmt.Println("get keys process below")
+	kv1 := map[string]interface{}{
+		"1": struct{}{},
+		"2": struct{}{},
+		"3": struct{}{},
+	}
+	fmt.Println(PureKeys(kv1))
+
+	kv2 := map[int]interface{}{
+		1: struct{}{},
+		2: struct{}{},
+		3: struct{}{},
+	}
+	fmt.Println(Keys(kv1))
+	fmt.Println(Keys(kv2))
 }
 
 func SumInts(m map[string]int64) int64 {
@@ -87,4 +105,20 @@ func Sum[K comparable, T int64 | float64 | string](m map[K]T) T {
 		t += v
 	}
 	return t
+}
+
+func PureKeys(m map[string]interface{}) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func Keys[T comparable](m map[T]interface{}) []T {
+	keys := make([]T, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
