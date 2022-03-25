@@ -23,6 +23,15 @@ func main() {
 	}
 	c := SumString(stringMap)
 	fmt.Println(c)
+
+	fmt.Println("Generic implementation is below")
+
+	aa := SumT(intMap)
+	fmt.Println(aa)
+	bb := SumT(floatMap)
+	fmt.Println(bb)
+	cc := SumT(stringMap)
+	fmt.Println(cc)
 }
 
 func SumInts(m map[string]int64) int64 {
@@ -43,6 +52,14 @@ func SumFloat(m map[string]float64) float64 {
 
 func SumString(m map[string]string) string {
 	var s string
+	for _, v := range m {
+		s += v
+	}
+	return s
+}
+
+func SumT[T int64 | float64 | string](m map[string]T) T {
+	var s T
 	for _, v := range m {
 		s += v
 	}
