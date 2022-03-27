@@ -132,13 +132,14 @@ func Uniq[T constraints.Ordered](s []T) []T {
 }
 
 func PureUniq(s []string) []string {
-	var ss []string
 	m := make(map[string]struct{}, len(s))
+	uniq := s[:0]
 	for _, ss := range s {
+		if _, ok := m[ss]; ok {
+			continue
+		}
 		m[ss] = struct{}{}
+		uniq = append(uniq, ss)
 	}
-	for k := range m {
-		ss = append(ss, k)
-	}
-	return ss
+	return uniq
 }
