@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"golang.org/x/exp/slices"
 )
 
 func main() {
@@ -121,4 +123,21 @@ func Keys[T comparable](m map[T]interface{}) []T {
 		keys = append(keys, k)
 	}
 	return keys
+}
+
+func Uniq[T comparable](s []T) []T {
+	slices.Sort(s)
+	return slices.Clip(slices.Compact(s))
+}
+
+func PureUniq(s []string) []string {
+	var ss []string
+	m := make(map[string]struct{}, len(s))
+	for _, ss := range s {
+		m[ss] = struct{}{}
+	}
+	for k := range m {
+		ss = append(ss, k)
+	}
+	return ss
 }
