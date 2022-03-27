@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 )
 
@@ -125,7 +126,7 @@ func Keys[T comparable](m map[T]interface{}) []T {
 	return keys
 }
 
-func Uniq[T comparable](s []T) []T {
+func Uniq[T constraints.Ordered](s []T) []T {
 	slices.Sort(s)
 	return slices.Clip(slices.Compact(s))
 }
