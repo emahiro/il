@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/emahiro/il/protobuf/pb/tutrialpb"
+	"google.golang.org/protobuf/proto"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 			},
 		},
 	}
-	b, err := json.Marshal(&person)
+	b, err := proto.Marshal(&person)
 	if err != nil {
 		fmt.Println(err)
 		return
