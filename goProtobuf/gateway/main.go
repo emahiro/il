@@ -5,7 +5,8 @@ import (
 	"flag"
 	"net/http"
 
-	pb "github.com/emahiro/il/protobuf/pb/proto"
+	"github.com/emahiro/il/protobuf/config"
+	gw "github.com/emahiro/il/protobuf/pb/proto"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -13,17 +14,19 @@ import (
 )
 
 var (
-	grpcServerEp = flag.String("grpc-server-endpoint", "localhost:50051", "gRPC server endpoint")
+	grpcServerEp = flag.String("grpc-server-endpoint", "localhost"+config.ServerPort, "gRPC server endpoint")
 )
 
+// gateway
 func run(ctx context.Context) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := pb.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts)
+	err := gw.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts)
 	if err != nil {
 		return err
 	}
-	return http.ListenAndServe(":8082", mux)
+	glog.Infof("[INFO]start server...")
+	return http.ListenAndServe(config.GatewayPort, mux)
 }
 
 func main() {

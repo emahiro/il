@@ -58,15 +58,14 @@ func (c *addressBookServiceClient) AddPerson(ctx context.Context, in *Person, op
 }
 
 // AddressBookServiceServer is the server API for AddressBookService service.
-// All implementations must embed UnimplementedAddressBookServiceServer
+// All implementations should embed UnimplementedAddressBookServiceServer
 // for forward compatibility
 type AddressBookServiceServer interface {
 	GetPerson(context.Context, *Person) (*Person, error)
 	AddPerson(context.Context, *Person) (*Person, error)
-	mustEmbedUnimplementedAddressBookServiceServer()
 }
 
-// UnimplementedAddressBookServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedAddressBookServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedAddressBookServiceServer struct {
 }
 
@@ -76,7 +75,6 @@ func (UnimplementedAddressBookServiceServer) GetPerson(context.Context, *Person)
 func (UnimplementedAddressBookServiceServer) AddPerson(context.Context, *Person) (*Person, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddPerson not implemented")
 }
-func (UnimplementedAddressBookServiceServer) mustEmbedUnimplementedAddressBookServiceServer() {}
 
 // UnsafeAddressBookServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AddressBookServiceServer will

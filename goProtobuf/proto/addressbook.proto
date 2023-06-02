@@ -38,6 +38,7 @@ service AddressBookService {
                 get: "/v1/people/{name}"
             };
   }
+
   rpc AddPerson(Person) returns (Person) {
     option(google.api.http) = {
             post: "/v1/people"
