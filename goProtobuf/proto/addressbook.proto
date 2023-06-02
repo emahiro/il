@@ -1,8 +1,9 @@
 syntax="proto3";
 package tutrial;
+option go_package = "/pb";
 
 import "google/protobuf/timestamp.proto";
-option go_package = "/pb";
+import "google/api/annotations.proto";
 
 message Person {
     string name=1;
@@ -30,5 +31,10 @@ message AddressBook {
 }
 
 service AddressBookService {
-    rpc AddPerson(Person) returns (Person) {}
+    rpc AddPerson(Person) returns (Person) {
+        option(google.api.http) = {
+            post: "/v1/people"
+            body: "*"
+        };
+    }
 }
