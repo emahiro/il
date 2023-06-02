@@ -3,20 +3,20 @@ package main
 import (
 	"fmt"
 
-	"github.com/emahiro/il/protobuf/pb/tutrialpb"
+	"github.com/emahiro/il/protobuf/pb"
 	"google.golang.org/protobuf/proto"
 )
 
 func main() {
 
-	person := tutrialpb.Person{
+	person := pb.Person{
 		Name:  "Taro",
 		Id:    1,
 		Email: "taro@examle.com",
-		Phones: []*tutrialpb.Person_PhoneNumber{
+		Phones: []*pb.Person_PhoneNumber{
 			{
 				Number: "090-1111-1111",
-				Type:   tutrialpb.Person_MOBILE,
+				Type:   pb.Person_MOBILE,
 			},
 		},
 	}

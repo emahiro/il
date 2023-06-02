@@ -2,7 +2,7 @@ syntax="proto3";
 package tutrial;
 
 import "google/protobuf/timestamp.proto";
-option go_package = "/tutrialpb";
+option go_package = "/pb";
 
 message Person {
     string name=1;
