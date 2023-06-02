@@ -9,6 +9,7 @@ It translates gRPC into RESTful JSON APIs.
 package pb
 
 import (
+	extPb "/pb"
 	"context"
 	"io"
 	"net/http"
@@ -31,8 +32,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_AddressBookService_AddPerson_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Person
+func request_AddressBookService_AddPerson_0(ctx context.Context, marshaler runtime.Marshaler, client extPb.AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq extPb.Person
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -48,8 +49,8 @@ func request_AddressBookService_AddPerson_0(ctx context.Context, marshaler runti
 
 }
 
-func local_request_AddressBookService_AddPerson_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Person
+func local_request_AddressBookService_AddPerson_0(ctx context.Context, marshaler runtime.Marshaler, server extPb.AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq extPb.Person
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -69,7 +70,7 @@ func local_request_AddressBookService_AddPerson_0(ctx context.Context, marshaler
 // UnaryRPC     :call AddressBookServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAddressBookServiceHandlerFromEndpoint instead.
-func RegisterAddressBookServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AddressBookServiceServer) error {
+func RegisterAddressBookServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server extPb.AddressBookServiceServer) error {
 
 	mux.Handle("POST", pattern_AddressBookService_AddPerson_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -127,15 +128,15 @@ func RegisterAddressBookServiceHandlerFromEndpoint(ctx context.Context, mux *run
 // RegisterAddressBookServiceHandler registers the http handlers for service AddressBookService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterAddressBookServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterAddressBookServiceHandlerClient(ctx, mux, NewAddressBookServiceClient(conn))
+	return RegisterAddressBookServiceHandlerClient(ctx, mux, extPb.NewAddressBookServiceClient(conn))
 }
 
 // RegisterAddressBookServiceHandlerClient registers the http handlers for service AddressBookService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AddressBookServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AddressBookServiceClient"
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "extPb.AddressBookServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "extPb.AddressBookServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "AddressBookServiceClient" to call the correct interceptors.
-func RegisterAddressBookServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AddressBookServiceClient) error {
+// "extPb.AddressBookServiceClient" to call the correct interceptors.
+func RegisterAddressBookServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client extPb.AddressBookServiceClient) error {
 
 	mux.Handle("POST", pattern_AddressBookService_AddPerson_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
