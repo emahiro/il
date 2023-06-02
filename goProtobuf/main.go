@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/emahiro/il/protobuf/pb"
+	pb "github.com/emahiro/il/protobuf/pb/proto"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -16,7 +16,7 @@ func main() {
 		Phones: []*pb.Person_PhoneNumber{
 			{
 				Number: "090-1111-1111",
-				Type:   pb.Person_MOBILE,
+				Type:   pb.Person_PHONE_TYPE_MOBILE_UNSPECIFIED,
 			},
 		},
 	}
