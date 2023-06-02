@@ -28,3 +28,7 @@ message Person {
 message AddressBook {
     repeated Person people=1;
 }
+
+service AddressBookService {
+    rpc AddPerson(Person) returns (Person) {}
+}
