@@ -1,40 +1,42 @@
 syntax="proto3";
+
 package tutrial;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
 option go_package = "/pb";
 
-import "google/protobuf/timestamp.proto";
-import "google/api/annotations.proto";
-
 message Person {
-    string name=1;
-    int32 id=2;
-    string email=3;
+  string name=1;
+  int32 id=2;
+  string email=3;
 
-    enum PhoneType {
-        MOBILE = 0;
-        HOME = 1;
-        WORK = 2;
-    }
+  enum PhoneType {
+    PHONE_TYPE_MOBILE_UNSPECIFIED = 0;
+    PHONE_TYPE_HOME = 1;
+    PHONE_TYPE_WORK = 2;
+  }
 
-    message PhoneNumber {
-        string number=1;
-        PhoneType type=2;
-    }
+  message PhoneNumber {
+    string number=1;
+    PhoneType type=2;
+  }
 
-    repeated PhoneNumber phones=4;
+  repeated PhoneNumber phones=4;
 
-    google.protobuf.Timestamp last_updated=5;
+  google.protobuf.Timestamp last_updated=5;
 }
 
 message AddressBook {
-    repeated Person people=1;
+  repeated Person people=1;
 }
 
 service AddressBookService {
-    rpc AddPerson(Person) returns (Person) {
-        option(google.api.http) = {
+  rpc AddPerson(Person) returns (Person) {
+    option(google.api.http) = {
             post: "/v1/people"
             body: "*"
         };
-    }
+  }
 }
