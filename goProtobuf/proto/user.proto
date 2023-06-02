@@ -5,32 +5,38 @@ package pb;
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "pb";
+option go_package = "/pb";
 
 message User {
-    int32 id=1;
-    string name=2;
-    string email=3;
-    int32 age=4;
+  int32 id=1;
+  string name=2;
+  string email=3;
+  int32 age=4;
 }
 
 message Users {
-    repeated User items=1;
+  repeated User items=1;
 }
 
 message GetUserRequest {
-    int32 id=1;
-    string name=2;
+  int32 id=1;
+  string name=2;
 }
 
 message GetUserResponse {
-    User self=1;
+  User self=1;
+}
+
+message GetUsersRequest {
+  repeated int32 ids=1;
+  int32 count=2;
+}
+
+message GetUsersResponse {
+  Users list=1;
 }
 
 service UserService {
-    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
-        option (google.api.http) = {
-            get: "/user/{id}"
-        };
-    }
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
 }
