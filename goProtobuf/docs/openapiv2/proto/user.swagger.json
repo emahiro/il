@@ -88,6 +88,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [

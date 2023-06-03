@@ -22,6 +22,7 @@ message Users {
 message GetUserRequest {
   int32 id=1;
   string name=2;
+  int32 age=3;
 }
 
 message GetUserResponse {
@@ -40,7 +41,7 @@ message GetUsersResponse {
 service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse){
     option (google.api.http) = {
-      get: "/users/{id}"
+      get: "/users/{id}",
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
         responses: {
