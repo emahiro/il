@@ -15,10 +15,6 @@ message User {
   int32 age=4;
 }
 
-message Users {
-  repeated User items=1;
-}
-
 message GetUserRequest {
   int32 id=1;
   string name=2;
@@ -35,7 +31,7 @@ message GetUsersRequest {
 }
 
 message GetUsersResponse {
-  Users list=1;
+  repeated User lists=1;
 }
 
 service UserService {
