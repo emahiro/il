@@ -2,33 +2,35 @@ package main
 
 import (
 	"context"
-	"flag"
+	"fmt"
 	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"golang.org/x/exp/slog"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/emahiro/il/protobuf/config"
 	gw "github.com/emahiro/il/protobuf/pb/proto"
-	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
-var (
-	grpcServerEp = flag.String("grpc-server-endpoint", "localhost"+config.ServerPort, "gRPC server endpoint")
-)
+func newGateway(ctx context.Context, conn *grpc.ClientConn, opts ...runtime.ServeMuxOption) (http.Handler, error) {
+	mux := runtime.NewServeMux(opts...)
 
-// gateway
-func run(ctx context.Context) error {
-	mux := runtime.NewServeMux()
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	if err := gw.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts); err != nil {
-		return err
+	for _, fn := range []func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error{
+		gw.RegisterAddressBookServiceHandler,
+		gw.RegisterUserServiceHandler,
+	} {
+		if err := fn(ctx, mux, conn); err != nil {
+			return nil, err
+		}
 	}
-	if err := gw.RegisterUserServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts); err != nil {
-		return err
-	}
-	glog.Infof("[INFO]start gateway...")
-	return http.ListenAndServe(config.GatewayPort, mux)
+
+	return mux, nil
+}
+
+func dial(ctx context.Context, addr string) (*grpc.ClientConn, error) {
+	return grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
 
 func main() {
@@ -36,10 +38,38 @@ func main() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	flag.Parse()
-	defer glog.Flush()
-
-	if err := run(ctx); err != nil {
-		glog.Fatal(err)
+	conn, err := dial(ctx, config.ServerPort)
+	if err != nil {
+		slog.ErrorCtx(ctx, "failed to open connecton. err: %v", err)
+		return
 	}
+	defer func() {
+		if err := conn.Close(); err != nil {
+			slog.ErrorCtx(ctx, "failed to close connecton. err: %v", err)
+		}
+	}()
+
+	mux := http.NewServeMux()
+	gw, err := newGateway(ctx, conn)
+	if err != nil {
+		slog.ErrorCtx(ctx, "failed to create gateway. err: %v", err)
+		return
+	}
+	mux.Handle("/", gw)
+
+	gwServer := &http.Server{
+		Addr:    config.GatewayPort,
+		Handler: mux,
+	}
+
+	slog.InfoCtx(ctx, fmt.Sprintf("start gateway server at localhost%s", config.GatewayPort))
+	if err := gwServer.ListenAndServe(); err != nil {
+		slog.ErrorCtx(ctx, "failed to start gateway server. err: %v", err)
+		return
+	}
+	defer func() {
+		if err := gwServer.Shutdown(ctx); err != nil {
+			slog.ErrorCtx(ctx, "failed to shutdown gateway server. err: %v", err)
+		}
+	}()
 }

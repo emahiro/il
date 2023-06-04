@@ -4,10 +4,12 @@ import (
 	"context"
 	"net"
 
-	"github.com/emahiro/il/protobuf/config"
-	pb "github.com/emahiro/il/protobuf/pb/proto"
+	"github.com/golang/glog"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
+
+	"github.com/emahiro/il/protobuf/config"
+	pb "github.com/emahiro/il/protobuf/pb/proto"
 )
 
 type addressBookService struct{}
@@ -54,18 +56,28 @@ func (s *userService) GetUsers(ctx context.Context, in *pb.GetUsersRequest) (*pb
 }
 
 func main() {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	l, err := net.Listen("tcp", config.ServerPort)
-	if err != nil {
+	defer func() {
+		if err != nil {
+			glog.Errorf("failed to close server. err: %v", err)
+		}
+	}()
+
+	svr := grpc.NewServer()
+	pb.RegisterAddressBookServiceServer(svr, new(addressBookService))
+	pb.RegisterUserServiceServer(svr, new(userService))
+	slog.Info("start server")
+	if err := svr.Serve(l); err != nil {
 		slog.Error(err.Error())
 		return
 	}
 
-	svc := grpc.NewServer()
-	pb.RegisterAddressBookServiceServer(svc, new(addressBookService))
-	pb.RegisterUserServiceServer(svc, new(userService))
-	slog.Info("start server")
-	if err := svc.Serve(l); err != nil {
-		slog.Error(err.Error())
-		return
-	}
+	defer func() {
+		svr.GracefulStop()
+		<-ctx.Done()
+	}()
 }
