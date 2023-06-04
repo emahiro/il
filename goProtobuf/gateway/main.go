@@ -21,11 +21,13 @@ var (
 func run(ctx context.Context) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := gw.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts)
-	if err != nil {
+	if err := gw.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts); err != nil {
 		return err
 	}
-	glog.Infof("[INFO]start server...")
+	if err := gw.RegisterUserServiceHandlerFromEndpoint(ctx, mux, *grpcServerEp, opts); err != nil {
+		return err
+	}
+	glog.Infof("[INFO]start gateway...")
 	return http.ListenAndServe(config.GatewayPort, mux)
 }
 

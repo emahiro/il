@@ -115,8 +115,12 @@
     "pbGetUsersResponse": {
       "type": "object",
       "properties": {
-        "list": {
-          "$ref": "#/definitions/pbUsers"
+        "lists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbUser"
+          }
         }
       }
     },
@@ -136,18 +140,6 @@
         "age": {
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "pbUsers": {
-      "type": "object",
-      "properties": {
-        "items": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/pbUser"
-          }
         }
       }
     },
