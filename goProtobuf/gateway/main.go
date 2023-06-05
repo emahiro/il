@@ -50,7 +50,12 @@ func main() {
 	}()
 
 	mux := http.NewServeMux()
-	gw, err := newGateway(ctx, conn)
+	gw, err := newGateway(ctx, conn,
+		// Custom header matcher
+		runtime.WithIncomingHeaderMatcher(func(s string) (string, bool) {
+			return s, false
+		}),
+	)
 	if err != nil {
 		slog.ErrorCtx(ctx, "failed to create gateway. err: %v", err)
 		return

@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	"github.com/golang/glog"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/emahiro/il/protobuf/config"
 	pb "github.com/emahiro/il/protobuf/pb/proto"
@@ -41,6 +43,11 @@ func (s *userService) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.G
 
 func (s *userService) GetUsers(ctx context.Context, in *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
 	slog.InfoCtx(ctx, "GetUsers だよ")
+	metadata, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		slog.ErrorCtx(ctx, "failed to get metadata")
+	}
+	slog.InfoCtx(ctx, fmt.Sprintf("metadata: %v", metadata))
 	return &pb.GetUsersResponse{
 		Lists: []*pb.User{
 			{
