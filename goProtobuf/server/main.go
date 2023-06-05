@@ -2,65 +2,16 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"github.com/golang/glog"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 
 	"github.com/emahiro/il/protobuf/config"
 	pb "github.com/emahiro/il/protobuf/pb/proto"
+	"github.com/emahiro/il/protobuf/server/service"
 )
-
-type addressBookService struct{}
-
-func (s *addressBookService) GetPerson(ctx context.Context, in *pb.Person) (*pb.Person, error) {
-	slog.InfoCtx(ctx, "GetPerson だよ")
-	return &pb.Person{
-		Name:  "Taro",
-		Email: "taro@example.com",
-	}, nil
-}
-
-func (s *addressBookService) AddPerson(ctx context.Context, in *pb.Person) (*pb.Person, error) {
-	slog.InfoCtx(ctx, "AddPerson だよ")
-	return nil, nil
-}
-
-type userService struct{}
-
-func (s *userService) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
-	slog.InfoCtx(ctx, "GetUser だよ")
-	return &pb.GetUserResponse{
-		Self: &pb.User{
-			Name: "Taro",
-			Age:  20,
-		},
-	}, nil
-}
-
-func (s *userService) GetUsers(ctx context.Context, in *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
-	slog.InfoCtx(ctx, "GetUsers だよ")
-	metadata, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		slog.ErrorCtx(ctx, "failed to get metadata")
-	}
-	slog.InfoCtx(ctx, fmt.Sprintf("metadata: %v", metadata))
-	return &pb.GetUsersResponse{
-		Lists: []*pb.User{
-			{
-				Name: "Taro",
-				Age:  20,
-			},
-			{
-				Name: "Jiro",
-				Age:  30,
-			},
-		},
-	}, nil
-}
 
 func main() {
 	ctx := context.Background()
@@ -75,15 +26,13 @@ func main() {
 	}()
 
 	svr := grpc.NewServer()
-	pb.RegisterAddressBookServiceServer(svr, new(addressBookService))
-	pb.RegisterUserServiceServer(svr, new(userService))
+	pb.RegisterAddressBookServiceServer(svr, new(service.AddressBookService))
+	pb.RegisterUserServiceServer(svr, new(service.UserService))
 	slog.Info("start server")
 
 	go func() {
-		defer func() {
-			svr.GracefulStop()
-			<-ctx.Done()
-		}()
+		defer svr.GracefulStop()
+		<-ctx.Done()
 	}()
 
 	if err := svr.Serve(l); err != nil {
