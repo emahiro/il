@@ -78,13 +78,16 @@ func main() {
 	pb.RegisterAddressBookServiceServer(svr, new(addressBookService))
 	pb.RegisterUserServiceServer(svr, new(userService))
 	slog.Info("start server")
+
+	go func() {
+		defer func() {
+			svr.GracefulStop()
+			<-ctx.Done()
+		}()
+	}()
+
 	if err := svr.Serve(l); err != nil {
 		slog.Error(err.Error())
 		return
 	}
-
-	defer func() {
-		svr.GracefulStop()
-		<-ctx.Done()
-	}()
 }
