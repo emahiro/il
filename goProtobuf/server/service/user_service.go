@@ -42,3 +42,15 @@ func (s *UserService) GetUsers(ctx context.Context, in *pb.GetUsersRequest) (*pb
 		},
 	}, nil
 }
+
+func (s *UserService) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	slog.InfoCtx(ctx, "CreateUser だよ")
+	slog.InfoCtx(ctx, "create user request", "input", in)
+	return &pb.CreateUserResponse{
+		Self: &pb.User{
+			Name:  in.Name,
+			Email: in.Email,
+			Age:   in.Age,
+		},
+	}, nil
+}

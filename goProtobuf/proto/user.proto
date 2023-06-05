@@ -34,6 +34,16 @@ message GetUsersResponse {
   repeated User lists=1;
 }
 
+message CreateUserRequest {
+  string name=1;
+  string email=2;
+  int32 age=3;
+}
+
+message CreateUserResponse {
+  User self=1;
+}
+
 service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse){
     option (google.api.http) = {
@@ -57,6 +67,20 @@ service UserService {
             key: "200"
             value: {
                 description: "OK"
+            }
+        }
+    };
+  };
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse){
+    option (google.api.http) = {
+      post: "/users"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        responses: {
+            key: "201"
+            value: {
+                description: "Created"
             }
         }
     };
