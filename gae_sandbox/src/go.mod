@@ -1,5 +1,7 @@
 module emahiro/il/gae_sandbox
 
+go 1.20
+
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/emahiro/ae-plain-logger v0.0.0-20190809175322-e897d4e5f8c7
