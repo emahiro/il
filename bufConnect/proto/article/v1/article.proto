@@ -34,6 +34,6 @@ message GetArticlesResponse  {
 
 service ArticleService {
   rpc GetArticle(GetArticleRequest) returns (GetArticleResponse) {}
-  rpc GetArticles(GetArticlesRequest) returns (stream GetArticlesResponse) {}
+  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse) {}
 }
 

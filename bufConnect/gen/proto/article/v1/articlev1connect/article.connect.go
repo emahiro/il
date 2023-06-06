@@ -44,7 +44,7 @@ const (
 // ArticleServiceClient is a client for the article.v1.ArticleService service.
 type ArticleServiceClient interface {
 	GetArticle(context.Context, *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error)
-	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.ServerStreamForClient[v1.GetArticlesResponse], error)
+	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.Response[v1.GetArticlesResponse], error)
 }
 
 // NewArticleServiceClient constructs a client for the article.v1.ArticleService service. By
@@ -82,14 +82,14 @@ func (c *articleServiceClient) GetArticle(ctx context.Context, req *connect_go.R
 }
 
 // GetArticles calls article.v1.ArticleService.GetArticles.
-func (c *articleServiceClient) GetArticles(ctx context.Context, req *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.ServerStreamForClient[v1.GetArticlesResponse], error) {
-	return c.getArticles.CallServerStream(ctx, req)
+func (c *articleServiceClient) GetArticles(ctx context.Context, req *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.Response[v1.GetArticlesResponse], error) {
+	return c.getArticles.CallUnary(ctx, req)
 }
 
 // ArticleServiceHandler is an implementation of the article.v1.ArticleService service.
 type ArticleServiceHandler interface {
 	GetArticle(context.Context, *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error)
-	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest], *connect_go.ServerStream[v1.GetArticlesResponse]) error
+	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.Response[v1.GetArticlesResponse], error)
 }
 
 // NewArticleServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -104,7 +104,7 @@ func NewArticleServiceHandler(svc ArticleServiceHandler, opts ...connect_go.Hand
 		svc.GetArticle,
 		opts...,
 	))
-	mux.Handle(ArticleServiceGetArticlesProcedure, connect_go.NewServerStreamHandler(
+	mux.Handle(ArticleServiceGetArticlesProcedure, connect_go.NewUnaryHandler(
 		ArticleServiceGetArticlesProcedure,
 		svc.GetArticles,
 		opts...,
@@ -119,6 +119,6 @@ func (UnimplementedArticleServiceHandler) GetArticle(context.Context, *connect_g
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("article.v1.ArticleService.GetArticle is not implemented"))
 }
 
-func (UnimplementedArticleServiceHandler) GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest], *connect_go.ServerStream[v1.GetArticlesResponse]) error {
-	return connect_go.NewError(connect_go.CodeUnimplemented, errors.New("article.v1.ArticleService.GetArticles is not implemented"))
+func (UnimplementedArticleServiceHandler) GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.Response[v1.GetArticlesResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("article.v1.ArticleService.GetArticles is not implemented"))
 }
