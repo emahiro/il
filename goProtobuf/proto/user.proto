@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "proto/protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "/pb";
+
+message User {
+  int32 id=1;
+  string name=2;
+  string email=3;
+  int32 age=4;
+}
+
+message GetUserRequest {
+  int32 id=1;
+  string name=2;
+  int32 age=3;
+}
+
+message GetUserResponse {
+  User self=1;
+}
+
+message GetUsersRequest {
+  repeated int32 ids=1;
+  int32 count=2;
+}
+
+message GetUsersResponse {
+  repeated User lists=1;
+}
+
+message CreateUserRequest {
+  string name=1;
+  string email=2;
+  int32 age=3;
+}
+
+message CreateUserResponse {
+  User self=1;
+}
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse){
+    option (google.api.http) = {
+      get: "/users/{id}",
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        responses: {
+            key: "200"
+            value: {
+                description: "OK"
+            }
+        }
+    };
+  };
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse){
+    option (google.api.http) = {
+      get: "/users"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        responses: {
+            key: "200"
+            value: {
+                description: "OK"
+            }
+        }
+    };
+  };
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse){
+    option (google.api.http) = {
+      post: "/users"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        responses: {
+            key: "201"
+            value: {
+                description: "Created"
+            }
+        }
+    };
+  };
+}

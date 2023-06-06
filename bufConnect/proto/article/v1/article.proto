@@ -1,0 +1,77 @@
+syntax="proto3";
+
+package article.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "proto/protoc-gen-openapiv2/options/annotations.proto";
+
+message Article {
+  int32 id = 1;
+  string title    = 2;
+  string body    = 3;
+
+  google.protobuf.Timestamp created_at=4;
+  google.protobuf.Timestamp updated_at=5;
+  google.protobuf.Timestamp last_updated_at=6;
+}
+
+message GetArticleRequest {
+  int32 id = 1;
+  string author = 2;
+}
+
+message GetArticleResponse {
+  Article self = 1;
+}
+
+message GetArticlesRequest {
+  repeated int32 ids = 1;
+  string author = 2;
+}
+
+message GetArticlesResponse  {
+  repeated Article lists = 1;
+}
+
+service ArticleService {
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse) {
+    option (google.api.http) = {
+      get: "/v1/articles/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "GetArticle"
+      responses: {
+        key: "200"
+        value: {
+          description: "OK"
+          schema: {
+            json_schema:{
+                ref: "#/definitions/GetArticleResponse"
+            }
+          }
+        }
+      }
+    };
+  }
+  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse) {
+    option (google.api.http) = {
+      get: "/v1/articles"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "GetArticles"
+      responses: {
+        key: "200"
+        value: {
+          description: "OK"
+          schema: {
+            json_schema:{
+                ref: "#/definitions/GetArticlesResponse"
+            }
+          }
+        }
+      }
+    };
+  }
+}
+
