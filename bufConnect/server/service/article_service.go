@@ -18,10 +18,10 @@ func (s *ArticleService) GetArticle(ctx context.Context, req *connect_go.Request
 	if !ok {
 		slog.ErrorCtx(ctx, "metadata not found")
 	}
-	slog.InfoCtx(ctx, "metadata", md)
+	slog.InfoCtx(ctx, "metadata", "metadata", md)
 
 	header := req.Header()
-	slog.InfoCtx(ctx, "request header", header)
+	slog.InfoCtx(ctx, "request header", "header", header)
 	return connect_go.NewResponse(&v1.GetArticleResponse{
 		Self: &v1.Article{
 			Id:    1,
@@ -37,7 +37,7 @@ func (s *ArticleService) GetArticles(ctx context.Context, req *connect_go.Reques
 	if !ok {
 		slog.ErrorCtx(ctx, "metadata not found")
 	}
-	slog.InfoCtx(ctx, "metadata", md)
+	slog.InfoCtx(ctx, "metadata", "md", md)
 
 	return connect_go.NewResponse(&v1.GetArticlesResponse{
 		Lists: []*v1.Article{
