@@ -2,7 +2,10 @@ syntax="proto3";
 
 package article.v1;
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
+import "proto/protoc-gen-openapiv2/options/annotations.proto";
+
 
 message Article {
   int32 id = 1;
@@ -33,7 +36,43 @@ message GetArticlesResponse  {
 }
 
 service ArticleService {
-  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse) {}
-  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse) {}
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse) {
+    option (google.api.http) = {
+      get: "/v1/articles/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "GetArticle"
+      responses: {
+        key: "200"
+        value: {
+          description: "OK"
+          schema: {
+            json_schema:{
+                ref: "#/definitions/GetArticleResponse"
+            }
+          }
+        }
+      }
+    };
+  }
+  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse) {
+    option (google.api.http) = {
+      get: "/v1/articles"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "GetArticles"
+      responses: {
+        key: "200"
+        value: {
+          description: "OK"
+          schema: {
+            json_schema:{
+                ref: "#/definitions/GetArticlesResponse"
+            }
+          }
+        }
+      }
+    };
+  }
 }
 
