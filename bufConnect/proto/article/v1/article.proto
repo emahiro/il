@@ -4,8 +4,6 @@ package article.v1;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package="/gen";
-
 message Article {
   int32 id = 1;
   string title    = 2;

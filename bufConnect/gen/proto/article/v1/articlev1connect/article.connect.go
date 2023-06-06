@@ -2,13 +2,13 @@
 //
 // Source: proto/article/v1/article.proto
 
-package genconnect
+package articlev1connect
 
 import (
-	gen "/gen"
 	context "context"
 	errors "errors"
 	connect_go "github.com/bufbuild/connect-go"
+	v1 "github.com/emahiro/il/bufconnect/gen/proto/article/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -43,8 +43,8 @@ const (
 
 // ArticleServiceClient is a client for the article.v1.ArticleService service.
 type ArticleServiceClient interface {
-	GetArticle(context.Context, *connect_go.Request[gen.GetArticleRequest]) (*connect_go.Response[gen.GetArticleResponse], error)
-	GetArticles(context.Context, *connect_go.Request[gen.GetArticlesRequest]) (*connect_go.ServerStreamForClient[gen.GetArticlesResponse], error)
+	GetArticle(context.Context, *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error)
+	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.ServerStreamForClient[v1.GetArticlesResponse], error)
 }
 
 // NewArticleServiceClient constructs a client for the article.v1.ArticleService service. By
@@ -57,12 +57,12 @@ type ArticleServiceClient interface {
 func NewArticleServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) ArticleServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &articleServiceClient{
-		getArticle: connect_go.NewClient[gen.GetArticleRequest, gen.GetArticleResponse](
+		getArticle: connect_go.NewClient[v1.GetArticleRequest, v1.GetArticleResponse](
 			httpClient,
 			baseURL+ArticleServiceGetArticleProcedure,
 			opts...,
 		),
-		getArticles: connect_go.NewClient[gen.GetArticlesRequest, gen.GetArticlesResponse](
+		getArticles: connect_go.NewClient[v1.GetArticlesRequest, v1.GetArticlesResponse](
 			httpClient,
 			baseURL+ArticleServiceGetArticlesProcedure,
 			opts...,
@@ -72,24 +72,24 @@ func NewArticleServiceClient(httpClient connect_go.HTTPClient, baseURL string, o
 
 // articleServiceClient implements ArticleServiceClient.
 type articleServiceClient struct {
-	getArticle  *connect_go.Client[gen.GetArticleRequest, gen.GetArticleResponse]
-	getArticles *connect_go.Client[gen.GetArticlesRequest, gen.GetArticlesResponse]
+	getArticle  *connect_go.Client[v1.GetArticleRequest, v1.GetArticleResponse]
+	getArticles *connect_go.Client[v1.GetArticlesRequest, v1.GetArticlesResponse]
 }
 
 // GetArticle calls article.v1.ArticleService.GetArticle.
-func (c *articleServiceClient) GetArticle(ctx context.Context, req *connect_go.Request[gen.GetArticleRequest]) (*connect_go.Response[gen.GetArticleResponse], error) {
+func (c *articleServiceClient) GetArticle(ctx context.Context, req *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error) {
 	return c.getArticle.CallUnary(ctx, req)
 }
 
 // GetArticles calls article.v1.ArticleService.GetArticles.
-func (c *articleServiceClient) GetArticles(ctx context.Context, req *connect_go.Request[gen.GetArticlesRequest]) (*connect_go.ServerStreamForClient[gen.GetArticlesResponse], error) {
+func (c *articleServiceClient) GetArticles(ctx context.Context, req *connect_go.Request[v1.GetArticlesRequest]) (*connect_go.ServerStreamForClient[v1.GetArticlesResponse], error) {
 	return c.getArticles.CallServerStream(ctx, req)
 }
 
 // ArticleServiceHandler is an implementation of the article.v1.ArticleService service.
 type ArticleServiceHandler interface {
-	GetArticle(context.Context, *connect_go.Request[gen.GetArticleRequest]) (*connect_go.Response[gen.GetArticleResponse], error)
-	GetArticles(context.Context, *connect_go.Request[gen.GetArticlesRequest], *connect_go.ServerStream[gen.GetArticlesResponse]) error
+	GetArticle(context.Context, *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error)
+	GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest], *connect_go.ServerStream[v1.GetArticlesResponse]) error
 }
 
 // NewArticleServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -115,10 +115,10 @@ func NewArticleServiceHandler(svc ArticleServiceHandler, opts ...connect_go.Hand
 // UnimplementedArticleServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedArticleServiceHandler struct{}
 
-func (UnimplementedArticleServiceHandler) GetArticle(context.Context, *connect_go.Request[gen.GetArticleRequest]) (*connect_go.Response[gen.GetArticleResponse], error) {
+func (UnimplementedArticleServiceHandler) GetArticle(context.Context, *connect_go.Request[v1.GetArticleRequest]) (*connect_go.Response[v1.GetArticleResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("article.v1.ArticleService.GetArticle is not implemented"))
 }
 
-func (UnimplementedArticleServiceHandler) GetArticles(context.Context, *connect_go.Request[gen.GetArticlesRequest], *connect_go.ServerStream[gen.GetArticlesResponse]) error {
+func (UnimplementedArticleServiceHandler) GetArticles(context.Context, *connect_go.Request[v1.GetArticlesRequest], *connect_go.ServerStream[v1.GetArticlesResponse]) error {
 	return connect_go.NewError(connect_go.CodeUnimplemented, errors.New("article.v1.ArticleService.GetArticles is not implemented"))
 }
