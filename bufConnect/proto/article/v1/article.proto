@@ -23,7 +23,7 @@ message GetArticleResponse {
 
 message GetArticlesRequest {
   repeated int32 ids = 1;
-  string author = 1;
+  string author = 2;
 }
 
 message GetArticlesResponse  {
@@ -31,7 +31,7 @@ message GetArticlesResponse  {
 }
 
 service ArticleService {
-  rpc GetArticle(GetArticleRequest) returns (Article) {}
-  rpc GetArticles(GetArticleRequest) returns (stream Article) {}
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse) {}
+  rpc GetArticles(GetArticlesRequest) returns (stream GetArticlesResponse) {}
 }
 
