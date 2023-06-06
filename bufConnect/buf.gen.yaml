@@ -3,6 +3,8 @@ managed:
   enabled: true
   go_package_prefix:
     default: github.com/emahiro/il/bufconnect/gen
+    except:
+      - buf.build/googleapis/googleapis
 plugins:
   - plugin: go
     out: gen

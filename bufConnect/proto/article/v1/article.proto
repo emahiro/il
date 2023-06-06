@@ -6,7 +6,6 @@ import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "proto/protoc-gen-openapiv2/options/annotations.proto";
 
-
 message Article {
   int32 id = 1;
   string title    = 2;

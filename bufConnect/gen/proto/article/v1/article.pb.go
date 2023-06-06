@@ -7,8 +7,8 @@
 package articlev1
 
 import (
-	_ "github.com/emahiro/il/bufconnect/gen/google/api"
 	_ "github.com/emahiro/il/bufconnect/gen/proto/protoc-gen-openapiv2/options"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
