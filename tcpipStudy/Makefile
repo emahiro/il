@@ -6,3 +6,12 @@ down:
 	docker-compose down
 remove:
 	docker-compose down --remove-orphans
+tuntap:
+	ip tuntap add mode tun dev tun0 &&\
+	ip link set tun0 up &&\
+	ip addr add 10.0.0.1/24 dev tun0
+
+tundetouch:
+	ip addr del 10.0.0.1/24 dev tun0 &&\
+	ip link set tun0 down &&\
+	ip tuntap del mode tun dev tun0
