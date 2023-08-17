@@ -13,7 +13,7 @@ tuntap:
 
 tundetouch:
 	ip addr del 10.0.0.1/24 dev tun0 &&\
-	ip link delete tun0 &&\
+	ip link delete tgo un0 &&\
 	ip tuntap del mode tun dev tun0
 
 capture:
