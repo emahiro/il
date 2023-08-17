@@ -6,11 +6,14 @@ RUN apt update &&\
     apt install curl -y &&\
     apt install git -y &&\
     apt install make -y &&\
-    apt install tcpdump -y
+    apt install tcpdump -y &&\
+    apt install -y wget
 
-RUN apt install software-properties-common -y &&\
-    add-apt-repository ppa:longsleep/golang-backports &&\
-    apt install golang-go -y
+RUN wget https://go.dev/dl/go1.21.0.linux-arm64.tar.gz &&\
+    tar -C /usr/local -xzf go1.21.0.linux-arm64.tar.gz &&\
+    rm go1.21.0.linux-arm64.tar.gz
+
+ENV PATH=$PATH:/usr/local/go/bin
 
 RUN go install github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest &&\
     go install github.com/ramya-rao-a/go-outline@latest &&\

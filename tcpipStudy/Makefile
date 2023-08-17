@@ -17,7 +17,7 @@ tundetouch:
 	ip tuntap del mode tun dev tun0
 
 capture:
-	tcpdump -i tun0 -w wireshark/capture.pcap
+	tcpdump -i tun0
 
 curl:
 	curl --interface tun0 http://10.0.0.2/
