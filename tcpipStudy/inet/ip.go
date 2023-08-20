@@ -19,7 +19,7 @@ type IpPacket struct {
 
 type IpPacketQueue struct {
 	incomingQueue chan IpPacket
-	outgoingQueue chan IpPacket
+	outgoingQueue chan nw.Packet
 	ctx           context.Context
 	cancel        context.CancelFunc
 }
@@ -27,7 +27,7 @@ type IpPacketQueue struct {
 func NewIpPacketQueue() *IpPacketQueue {
 	return &IpPacketQueue{
 		incomingQueue: make(chan IpPacket, QueueSize),
-		outgoingQueue: make(chan IpPacket, QueueSize),
+		outgoingQueue: make(chan nw.Packet, QueueSize),
 	}
 }
 
@@ -86,7 +86,7 @@ func (q *IpPacketQueue) Read() (IpPacket, error) {
 	return pkt, nil
 }
 
-func (q *IpPacketQueue) Write(pkt IpPacket) error {
+func (q *IpPacketQueue) Write(pkt nw.Packet) error {
 	select {
 	case q.outgoingQueue <- pkt:
 		return nil
