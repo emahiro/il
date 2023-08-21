@@ -56,6 +56,7 @@ func (q *TcpPacketQueue) ManageQueues(ip *inet.IpPacketQueue) {
 					TcpHeader: tcpHdr,
 					Packet:    ipp.Packet,
 				}
+				q.manager.recv(q, tcpPkt)
 			}
 		}
 

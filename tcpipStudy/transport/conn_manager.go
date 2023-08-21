@@ -1,6 +1,11 @@
 package transport
 
-import "sync"
+import (
+	"log"
+	"math/rand"
+	"sync"
+	"time"
+)
 
 const (
 	StateListen State = iota
@@ -36,6 +41,27 @@ func NewConnectionManager() *ConnectionManager {
 	return &ConnectionManager{
 		AcceptQueue: make(chan *Connection, QueueSize),
 	}
+}
+
+func (m *ConnectionManager) addConnection(pkt TcpPacket) Connection {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	seed := time.Now().UnixNano()
+	r := rand.New(rand.NewSource(seed))
+
+	conn := Connection{
+		SrcPort:         pkt.TcpHeader.SrcPort,
+		DstPort:         pkt.TcpHeader.DstPort,
+		State:           StateSynReceived,
+		N:               pkt.Packet.N,
+		Pkt:             pkt,
+		initialSeqNum:   uint32(r.Int31()),
+		incrementSeqNum: 0,
+	}
+	m.Connections = append(m.Connections, conn)
+
+	return conn
 }
 
 func (m *ConnectionManager) find(pkt TcpPacket) (Connection, bool) {
@@ -89,5 +115,16 @@ func (m *ConnectionManager) updateIncrementSeqNum(pkt TcpPacket, val uint32) {
 }
 
 func (m *ConnectionManager) recv(q *TcpPacketQueue, pkt TcpPacket) {
+	conn, connected := m.find(pkt)
+	if !connected {
+		m.addConnection(pkt)
+	} else {
+		conn.Pkt = pkt
+	}
 
+	if pkt.TcpHeader.Flags.SYN && connected {
+		log.Println("Received SYN packet")
+		// queue write
+		m.update(pkt, StateSynReceived, false)
+	}
 }
