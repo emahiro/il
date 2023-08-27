@@ -32,14 +32,14 @@ type Connection struct {
 }
 
 type ConnectionManager struct {
-	Connections []Connection
-	AcceptQueue chan *Connection
-	lock        sync.Mutex
+	Connections           []Connection
+	AcceptConnectionQueue chan Connection
+	lock                  sync.Mutex
 }
 
 func NewConnectionManager() *ConnectionManager {
 	return &ConnectionManager{
-		AcceptQueue: make(chan *Connection, QueueSize),
+		AcceptConnectionQueue: make(chan Connection, QueueSize),
 	}
 }
 
@@ -126,5 +126,41 @@ func (m *ConnectionManager) recv(q *TcpPacketQueue, pkt TcpPacket) {
 		log.Println("Received SYN packet")
 		// queue write
 		m.update(pkt, StateSynReceived, false)
+	}
+
+	if connected && pkt.TcpHeader.Flags.ACK && conn.State == StateSynReceived {
+		log.Println("Received ACK packet")
+		m.update(pkt, StateEstablished, false)
+	}
+
+	if connected && pkt.TcpHeader.Flags.PSH && conn.State == StateEstablished {
+		log.Println("Received PSH packet")
+		q.Write(conn, HeaderFlags{
+			ACK: true,
+		}, nil)
+		m.update(pkt, StateEstablished, true)
+		m.AcceptConnectionQueue <- conn
+	}
+
+	if connected && pkt.TcpHeader.Flags.FIN && conn.State == StateEstablished {
+		log.Println("Received FIN packet")
+
+		q.Write(conn, HeaderFlags{
+			ACK: true,
+		}, nil)
+		m.update(pkt, StateClosedWait, false)
+
+		q.Write(conn, HeaderFlags{
+			FIN: true,
+			ACK: true,
+		}, nil)
+
+		m.update(pkt, StateLastAck, false)
+	}
+
+	if connected && pkt.TcpHeader.Flags.ACK && conn.State == StateLastAck {
+		log.Println("Received ACK packet")
+		m.update(pkt, StateClosed, false)
+		m.remove(pkt)
 	}
 }

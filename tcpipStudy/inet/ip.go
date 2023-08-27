@@ -66,7 +66,7 @@ func (ip *IpPacketQueue) ManageQueues(nw *nw.NetDevice) {
 			case <-ip.ctx.Done():
 				return
 			case pkt := <-ip.outgoingQueue:
-				if err := nw.Write(pkt.Packet); err != nil {
+				if err := nw.Write(pkt); err != nil {
 					log.Printf("write error: %v", err)
 				}
 			}

@@ -2,6 +2,7 @@ package transport
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/emahiro/il/tcpipStudy/inet"
@@ -76,4 +77,57 @@ func (q *TcpPacketQueue) ManageQueues(ip *inet.IpPacketQueue) {
 			}
 		}
 	}()
+}
+
+func (q *TcpPacketQueue) Close() {
+	q.cancel()
+}
+
+func (q *TcpPacketQueue) Write(conn Connection, flags HeaderFlags, data []byte) {
+	pkt := conn.Pkt
+	tcpDataLen := int(pkt.Packet.N) - (int(pkt.IpHeader.IHL) * 4) - (int(pkt.TcpHeader.DataOff) * 4)
+
+	incrementAckNum := 0
+	if tcpDataLen == 0 {
+		incrementAckNum = 1
+	} else {
+		incrementAckNum = tcpDataLen
+	}
+
+	ackNum := pkt.TcpHeader.SeqNum + uint32(incrementAckNum)
+	seqNum := conn.initialSeqNum + conn.incrementSeqNum
+
+	writeIpHdr := inet.NewIP(pkt.IpHeader.DstIP, pkt.IpHeader.SrcIP, Length+len(data))
+	writeTcpHdr := NewTCPHeader(
+		pkt.TcpHeader.DstPort,
+		pkt.TcpHeader.SrcPort,
+		seqNum,
+		ackNum,
+		flags,
+	)
+
+	ipHdr := writeIpHdr.Marshal()
+	tcpHdr := writeTcpHdr.Marshal(conn.Pkt.IpHeader, data)
+
+	writePkt := append(ipHdr, tcpHdr...)
+	writePkt = append(writePkt, data...)
+
+	incrementSeqNum := 0
+	if flags.SYN || flags.FIN {
+		incrementSeqNum += 1
+	}
+	incrementSeqNum += len(data)
+	q.manager.updateIncrementSeqNum(pkt, uint32(incrementSeqNum))
+	q.outgoingQueue <- nw.Packet{
+		Buf: ipHdr,
+		N:   uintptr(len(writePkt)),
+	}
+}
+
+func (q *TcpPacketQueue) ReadAcceptConnection() (Connection, error) {
+	pkt, received := <-q.manager.AcceptConnectionQueue
+	if !received {
+		return Connection{}, fmt.Errorf("accept connection queue is closed")
+	}
+	return pkt, nil
 }
