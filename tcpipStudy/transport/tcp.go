@@ -85,6 +85,8 @@ func (q *TcpPacketQueue) Close() {
 
 func (q *TcpPacketQueue) Write(conn Connection, flags HeaderFlags, data []byte) {
 	pkt := conn.Pkt
+
+	fmt.Printf("⭐ pkt %v\n", pkt)
 	tcpDataLen := int(pkt.Packet.N) - (int(pkt.IpHeader.IHL) * 4) - (int(pkt.TcpHeader.DataOff) * 4)
 
 	incrementAckNum := 0

@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"sync"
@@ -50,6 +51,7 @@ func (m *ConnectionManager) addConnection(pkt TcpPacket) Connection {
 	seed := time.Now().UnixNano()
 	r := rand.New(rand.NewSource(seed))
 
+	fmt.Printf("⭐ addConnection pkg %+v\n", pkt)
 	conn := Connection{
 		SrcPort:         pkt.TcpHeader.SrcPort,
 		DstPort:         pkt.TcpHeader.DstPort,
@@ -60,6 +62,7 @@ func (m *ConnectionManager) addConnection(pkt TcpPacket) Connection {
 		incrementSeqNum: 0,
 	}
 	m.Connections = append(m.Connections, conn)
+	fmt.Printf("⭐ addConnection conn %+v\n", conn)
 
 	return conn
 }
@@ -115,16 +118,23 @@ func (m *ConnectionManager) updateIncrementSeqNum(pkt TcpPacket, val uint32) {
 }
 
 func (m *ConnectionManager) recv(q *TcpPacketQueue, pkt TcpPacket) {
+	fmt.Printf("⭐ pkt %+v\n", pkt)
 	conn, connected := m.find(pkt)
 	if !connected {
-		m.addConnection(pkt)
+		fmt.Printf("⭐ not connected %+v\n", pkt)
+		conn = m.addConnection(pkt)
 	} else {
 		conn.Pkt = pkt
 	}
+	fmt.Printf("⭐ conn %+v\n", conn)
 
-	if pkt.TcpHeader.Flags.SYN && connected {
+	if pkt.TcpHeader.Flags.SYN && !connected {
 		log.Println("Received SYN packet")
 		// queue write
+		q.Write(conn, HeaderFlags{
+			SYN: true,
+			ACK: true,
+		}, nil)
 		m.update(pkt, StateSynReceived, false)
 	}
 
