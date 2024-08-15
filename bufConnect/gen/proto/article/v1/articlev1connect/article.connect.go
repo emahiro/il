@@ -98,18 +98,26 @@ type ArticleServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewArticleServiceHandler(svc ArticleServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(ArticleServiceGetArticleProcedure, connect_go.NewUnaryHandler(
+	articleServiceGetArticleHandler := connect_go.NewUnaryHandler(
 		ArticleServiceGetArticleProcedure,
 		svc.GetArticle,
 		opts...,
-	))
-	mux.Handle(ArticleServiceGetArticlesProcedure, connect_go.NewUnaryHandler(
+	)
+	articleServiceGetArticlesHandler := connect_go.NewUnaryHandler(
 		ArticleServiceGetArticlesProcedure,
 		svc.GetArticles,
 		opts...,
-	))
-	return "/article.v1.ArticleService/", mux
+	)
+	return "/article.v1.ArticleService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case ArticleServiceGetArticleProcedure:
+			articleServiceGetArticleHandler.ServeHTTP(w, r)
+		case ArticleServiceGetArticlesProcedure:
+			articleServiceGetArticlesHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedArticleServiceHandler returns CodeUnimplemented from all methods.
