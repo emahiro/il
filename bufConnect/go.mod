@@ -1,6 +1,8 @@
 module github.com/emahiro/il/bufconnect
 
-go 1.20
+go 1.23
+
+toolchain go1.23.0
 
 require (
 	github.com/bufbuild/connect-go v1.8.0
