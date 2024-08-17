@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"context"
+
+	"github.com/emahiro/il/sloger/sloger"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	sloger.New()
+	ctx := context.Background()
+	sloger.Infof(ctx, "Hello, %s", "world")
 }
