@@ -17,7 +17,7 @@ type sloger struct {
 
 func New() {
 	logger = &sloger{
-		logger: WithCloudLogAttr(slog.New(slog.NewJSONHandler(os.Stderr, nil)), slog.LevelInfo),
+		logger: slog.New(slog.NewJSONHandler(os.Stderr, nil)),
 	}
 }
 

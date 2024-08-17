@@ -6,11 +6,6 @@ import (
 	"os"
 )
 
-func WithCloudLogAttr(base *slog.Logger, severity slog.Level) *slog.Logger {
-	return base.
-		With(slog.String("severity", severity.String()))
-}
-
 func defaultCloudLogAttrs(ctx context.Context, severity, message string) []slog.Attr {
 	traceID, ok := ctx.Value(traceIDKey{}).(string)
 	if !ok {
