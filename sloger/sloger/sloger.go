@@ -17,3 +17,8 @@ func Infof(ctx context.Context, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
 	logger.LogAttrs(ctx, slog.LevelInfo, msg)
 }
+
+func Errorf(ctx context.Context, format string, args ...interface{}) {
+	msg := fmt.Sprintf(format, args...)
+	logger.LogAttrs(ctx, slog.LevelError, msg)
+}
