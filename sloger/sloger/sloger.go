@@ -24,13 +24,13 @@ func New() {
 func Infof(ctx context.Context, format string, args ...interface{}) {
 	logger.setMsg(fmt.Sprintf(format, args...))
 	logger.setSeverity(slog.LevelInfo)
-	logger.output(ctx, defaultCloudLogAttrs(logger.sev.String(), logger.msg)...)
+	logger.output(ctx, defaultCloudLogAttrs(ctx, logger.sev.String(), logger.msg)...)
 }
 
 func Errorf(ctx context.Context, format string, args ...interface{}) {
 	logger.setMsg(fmt.Sprintf(format, args...))
 	logger.setSeverity(slog.LevelError)
-	logger.output(ctx, defaultCloudLogAttrs(logger.sev.String(), logger.msg)...)
+	logger.output(ctx, defaultCloudLogAttrs(ctx, logger.sev.String(), logger.msg)...)
 }
 
 func (l *sloger) setSeverity(sev slog.Level) {
