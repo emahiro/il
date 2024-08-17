@@ -10,7 +10,7 @@ import (
 var logger *slog.Logger
 
 func New() {
-	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	logger = WithCloudLogAttr(slog.New(slog.NewJSONHandler(os.Stderr, nil)), slog.LevelInfo)
 }
 
 func Infof(ctx context.Context, format string, args ...interface{}) {
