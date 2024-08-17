@@ -7,24 +7,40 @@ import (
 	"os"
 )
 
-var logger *slog.Logger
+var logger *sloger
+
+type sloger struct {
+	logger *slog.Logger
+	sev    slog.Level
+	msg    string
+}
 
 func New() {
-	logger = WithCloudLogAttr(slog.New(slog.NewJSONHandler(os.Stderr, nil)), slog.LevelInfo)
+	logger = &sloger{
+		logger: WithCloudLogAttr(slog.New(slog.NewJSONHandler(os.Stderr, nil)), slog.LevelInfo),
+	}
 }
 
 func Infof(ctx context.Context, format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-	sev := slog.LevelInfo
-	output(ctx, sev, msg, defaultCloudLogAttrs(sev.String(), msg)...)
+	logger.setMsg(fmt.Sprintf(format, args...))
+	logger.setSeverity(slog.LevelInfo)
+	logger.output(ctx, defaultCloudLogAttrs(logger.sev.String(), logger.msg)...)
 }
 
 func Errorf(ctx context.Context, format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-	sev := slog.LevelError
-	output(ctx, sev, msg, defaultCloudLogAttrs(sev.String(), msg)...)
+	logger.setMsg(fmt.Sprintf(format, args...))
+	logger.setSeverity(slog.LevelError)
+	logger.output(ctx, defaultCloudLogAttrs(logger.sev.String(), logger.msg)...)
 }
 
-func output(ctx context.Context, severity slog.Level, msg string, attrs ...slog.Attr) {
-	logger.LogAttrs(ctx, severity, msg, attrs...)
+func (l *sloger) setSeverity(sev slog.Level) {
+	l.sev = sev
+}
+
+func (l *sloger) setMsg(msg string) {
+	l.msg = msg
+}
+
+func (l *sloger) output(ctx context.Context, attrs ...slog.Attr) {
+	l.logger.LogAttrs(ctx, l.sev, l.msg, attrs...)
 }
