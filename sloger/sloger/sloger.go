@@ -15,10 +15,16 @@ func New() {
 
 func Infof(ctx context.Context, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-	logger.LogAttrs(ctx, slog.LevelInfo, msg)
+	sev := slog.LevelInfo
+	output(ctx, sev, msg, defaultCloudLogAttrs(sev.String(), msg)...)
 }
 
 func Errorf(ctx context.Context, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args...)
-	logger.LogAttrs(ctx, slog.LevelError, msg)
+	sev := slog.LevelError
+	output(ctx, sev, msg, defaultCloudLogAttrs(sev.String(), msg)...)
+}
+
+func output(ctx context.Context, severity slog.Level, msg string, attrs ...slog.Attr) {
+	logger.LogAttrs(ctx, severity, msg, attrs...)
 }
