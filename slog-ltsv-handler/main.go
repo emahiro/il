@@ -14,6 +14,7 @@ import (
 
 func main() {
 	logger := slog.New(NewLtsvHandler(os.Stderr, nil))
+	slog.SetDefault(logger)
 	logger.Info("foo:aaa\tbar:bbb")
 }
 
@@ -79,10 +80,10 @@ func ltsvSeparator(msg string) iter.Seq2[string, string] {
 
 // TODO: Implement the rest of the slog.Handler interface
 func (h *LtsvHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return slog.Default().Handler()
+	return h
 }
 
 // TODO Implement the rest of the slog.Handler interface
 func (h *LtsvHandler) WithGroup(name string) slog.Handler {
-	return slog.Default().Handler()
+	return h
 }
